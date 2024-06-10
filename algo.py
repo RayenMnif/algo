@@ -31,23 +31,23 @@ TT_OpenParen = "OpenParen"
 TT_CloseParen = "CloseParen"
 
 class Token:
-    def __init__(self, value, type) -> None:
+    def __init__(self, value: str, type: str) -> None:
         self.value = value
         self.type = type
     def __repr__(self) -> str:
-        return f" [ {self.value} : {self.type} ] "
+        return f" ({self.value} : {self.type})"
 
 
 class Lexer:
-    def __init__(self, source_code) -> None:
+    def __init__(self, source_code : str) -> None:
         self.src = source_code
         self.PosLine = 1
 
-    def is_skippable(self, x):
+    def is_skippable(self, x: str) -> bool:
         if  x == "\n": self.PosLine += 1
         return x == " " or x == "\n" or x == "\t" or x == "\r"
 
-    def stringify(self, src):
+    def stringify(self, src: str) -> str:
         string = ""
         i = 1
         while src[i] != src[0] and i < len(src):
@@ -55,7 +55,7 @@ class Lexer:
             i += 1
         return string
 
-    def tokinze(self):
+    def tokinze(self) -> list[Token]:
         tokens : list[Token] = []
         src = list(self.src)
         while len(src) != 0:
@@ -116,6 +116,44 @@ class Lexer:
                 exit(0)
 
         return tokens
+
+
+class Statement:
+    def __init__(self, type) -> None:
+       self.type = type
+    def __repr__(self) -> str:
+        return f"(Statement : {self.type})"
+
+class Program:
+    def __init__(self, body: list[Statement], type: Statement) -> None:
+        self.body = body
+        self.type = Statement("Program")
+
+
+class Expression():
+    def __init__(self, type: str) -> None:
+       self.type = type
+    def __repr__(self) -> str:
+        return f"(Expression : {self.type})"
+
+class BinaryOperation:
+    def __init__(self, LeftOp: Exception, RightOp: Exception, Op: str, type: Exception) -> None:
+        self.LeftOp = LeftOp
+        self.RightOp = RightOp
+        self.op = Op
+        self.type = Exception("BinaryOperator")
+
+
+class NumericLiteral:
+    def __init__(self, value: float, type: Expression) -> None:
+        self.value = value
+        self.type = Expression("NumericLiteral")
+
+
+class Indentifier:
+    def __init__(self, type: Expression, name: str) -> None:
+        self.type = Expression("Indentifier") 
+        self.name = name
 
 
 class Parser:
