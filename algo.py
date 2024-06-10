@@ -47,7 +47,7 @@ class Lexer:
         if  x == "\n": self.PosLine += 1
         return x == " " or x == "\n" or x == "\t" or x == "\r"
 
-    def stringify(self, src: str) -> str:
+    def stringify(self, src: list[str]) -> str:
         string = ""
         i = 1
         while src[i] != src[0] and i < len(src):
