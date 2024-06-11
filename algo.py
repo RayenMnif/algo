@@ -117,42 +117,43 @@ class Lexer:
 
         return tokens
 
+# Nodes 
+NodeProgram = "Program"
+NodeBinaryOperation = "BinaryOperation"
+NodeIndentifier = "Indentifier"
+NodeNumericLiteral = "NumericLiteral"
 
 class Statement:
-    def __init__(self, type) -> None:
-       self.type = type
-    def __repr__(self) -> str:
-        return f"(Statement : {self.type})"
-
-class Program:
-    def __init__(self, body: list[Statement], type: Statement) -> None:
-        self.body = body
-        self.type = Statement("Program")
-
-
-class Expression():
     def __init__(self, type: str) -> None:
        self.type = type
-    def __repr__(self) -> str:
-        return f"(Expression : {self.type})"
 
-class BinaryOperation:
-    def __init__(self, LeftOp: Exception, RightOp: Exception, Op: str, type: Exception) -> None:
+
+class Program(Statement):
+    def __init__(self, body: list[Statement]) -> None:
+        self.body = body
+        self.type = super().__init__(NodeProgram)
+
+
+class Expression(Statement):
+    pass
+
+class BinaryOperation(Expression):
+    def __init__(self, LeftOp: Exception, RightOp: Exception, Op: str) -> None:
         self.LeftOp = LeftOp
         self.RightOp = RightOp
         self.op = Op
-        self.type = Exception("BinaryOperator")
+        self.type = super().__init__(NodeBinaryOperation)
 
 
-class NumericLiteral:
-    def __init__(self, value: float, type: Expression) -> None:
+class NumericLiteral(Expression):
+    def __init__(self, value: float) -> None:
         self.value = value
-        self.type = Expression("NumericLiteral")
+        self.type = super().__init__(NodeNumericLiteral)
 
 
-class Indentifier:
-    def __init__(self, type: Expression, name: str) -> None:
-        self.type = Expression("Indentifier") 
+class Indentifier(Expression):
+    def __init__(self, name: str) -> None:
+        self.type = super().__init__(NodeIndentifier) 
         self.name = name
 
 
