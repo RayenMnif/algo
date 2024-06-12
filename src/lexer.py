@@ -1,17 +1,14 @@
-import colorama
-from sys import argv, exit
+from src.utils import Error
 
-colorama.init(autoreset=True)
 
 # tokens 
+TT_EOF = "EOF"
 # --- var types ---
 TT_Number = "Number"
 TT_String = "String"
-
 # --- var related ---
 TT_Var = "Var"
 TT_Indentifier = "Indentifier"
-
 # --- operations ---
 TT_Equels = "Equals"
 TT_NotEqual = "Not Equals"
@@ -20,18 +17,18 @@ TT_Greater = "Grater"
 TT_GreaterOrEqual = "GraterOrEqual"
 TT_LessOrEqual = "LessOrEqual"
 TT_BinaryOperator = "BinaryOperator"
-
 # --- keywords ---
 TT_Vrai = "Vrai"
 TT_Faux = "Faux"
 TT_Mod = "Mod"
 TT_Div = "Div"
-
+# --- symbols ---
 TT_OpenParen = "OpenParen"
 TT_CloseParen = "CloseParen"
 
+
 class Token:
-    def __init__(self, value: str, type: str) -> None:
+    def __init__(self, value, type: str) -> None:
         self.value = value
         self.type = type
     def __repr__(self) -> str:
@@ -94,7 +91,7 @@ class Lexer:
                 while src[0].isdigit():
                     number += src[0]
                     src.pop(0)
-                tokens.append(Token(number, TT_Number))
+                tokens.append(Token(float(number), TT_Number))
             elif src[0] == "=": 
                 tokens.append(Token("=", TT_Equels))
                 src.pop(0)
@@ -112,59 +109,10 @@ class Lexer:
                     src.pop(0)
                 tokens.append(Token(string, TT_Var))
             else:
-                print(f"{colorama.Fore.RED}< Error >{colorama.Fore.RESET}\nUnkown symbol '{src[0]}' at line {self.PosLine} ")
-                exit(0)
+                Error(f"Syntax Error: unkown symbol {src[0]}", self.PosLine)
 
+        tokens.append(Token("EOF", TT_EOF))
         return tokens
 
-# Nodes 
-NodeProgram = "Program"
-NodeBinaryOperation = "BinaryOperation"
-NodeIndentifier = "Indentifier"
-NodeNumericLiteral = "NumericLiteral"
-
-class Statement:
-    def __init__(self, type: str) -> None:
-       self.type = type
 
 
-class Program(Statement):
-    def __init__(self, body: list[Statement]) -> None:
-        self.body = body
-        self.type = super().__init__(NodeProgram)
-
-
-class Expression(Statement):
-    pass
-
-class BinaryOperation(Expression):
-    def __init__(self, LeftOp: Exception, RightOp: Exception, Op: str) -> None:
-        self.LeftOp = LeftOp
-        self.RightOp = RightOp
-        self.op = Op
-        self.type = super().__init__(NodeBinaryOperation)
-
-
-class NumericLiteral(Expression):
-    def __init__(self, value: float) -> None:
-        self.value = value
-        self.type = super().__init__(NodeNumericLiteral)
-
-
-class Indentifier(Expression):
-    def __init__(self, name: str) -> None:
-        self.type = super().__init__(NodeIndentifier) 
-        self.name = name
-
-
-class Parser:
-    pass
-
-
-if len(argv) != 2:
-    print("Usage: python algo.py [script]")
-    exit(0)
-
-with open(argv[1], "r") as script:
-    tokens = Lexer(script.read()).tokinze()
-    print(tokens)

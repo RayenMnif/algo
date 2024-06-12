@@ -1,0 +1,43 @@
+#!/usr/bin/env python3
+
+from src.parser import *
+from src.lexer import * 
+from sys import argv, exit
+
+
+if len(argv) not in [2, 1]:
+    print("Usage: algo [script]")
+    exit(0)
+
+if len(argv) == 2:
+    with open(argv[1], "r") as script:
+        # print(Lexer(script.read()).tokinze()) print tokens
+        Parser(Lexer(script.read()).tokinze())#.produce_ast()
+else:
+    print(""" 
+     ▄▄▄       ██▓      ▄████  ▒█████  
+    ▒████▄    ▓██▒     ██▒ ▀█▒▒██▒  ██▒
+    ▒██  ▀█▄  ▒██░    ▒██░▄▄▄░▒██░  ██▒
+    ░██▄▄▄▄██ ▒██░    ░▓█  ██▓▒██   ██░
+    ▓█   ▓██▒░██████▒░▒▓███▀▒░ ████▓▒░
+    ▒▒   ▓▒█░░ ▒░▓  ░ ░▒   ▒ ░ ▒░▒░▒░ 
+     ▒   ▒▒ ░░ ░ ▒  ░  ░   ░   ░ ▒ ▒░ 
+     ░   ▒     ░ ░   ░ ░   ░ ░ ░ ░ ▒  
+         ░  ░    ░  ░      ░     ░ ░  
+                                      
+ Tunisian shitty pseudo/programming language
+
+Type "exit", "quit" to quit 
+     "help", "credits" for more information
+
+Algo v0.1
+""")
+    try:
+        prompt = input(">> ")
+    except:
+        exit()
+    while prompt.upper() not in ["EXIT", "QUIT"]:
+        try:
+            prompt = input(">> ")
+        except:
+            exit()
