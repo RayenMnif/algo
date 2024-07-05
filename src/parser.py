@@ -4,13 +4,13 @@ from src.utils import Error
 
 
 class Parser:
-    def __init__(self, tokens: list[Token]) -> None:
-        self.tokens = tokens
+    def __init__(self, code: str) -> None:
+        self.tokens = Lexer(code).tokinze()
 
     def produce_ast(self) -> Program:
         program: Program = Program([])
         while (self.tokens[0].type != TT_EOF):
-           program.body.append(self.parse_statement(self.tokens[0]))
+           program.body.append(self.parse_statement())
         return program
 
     def advance(self) -> Token:
@@ -18,19 +18,44 @@ class Parser:
         self.tokens.pop(0)
         return token
 
-    def parse_statement(self, token: Token) -> Statement:
-        return self.parse_expression(token)
+    def parse_statement(self) -> Statement:
+        return self.parse_expression()
 
-    def parse_expression(self, token: Token) -> Expression:
-        return self.parse_primary_expressions(token)
+    def parse_expression(self) -> Expression:
+        return self.parse_additive_expressions()
 
-    def parse_primary_expressions(self, token: Token) -> Expression:
-        if token.type == TT_Number:        
+    def parse_additive_expressions(self) -> Expression:
+        left = self.parse_multiplicitive_expressions()
+        while self.tokens[0].value in "+-":
+            operator = self.advance().value
+            right = self.parse_multiplicitive_expressions()
+            left = BinaryOperation(left, right, operator)
+        return left 
+
+    def parse_multiplicitive_expressions(self) -> Expression:
+        left = self.parse_primary_expressions()
+        while self.tokens[0].value in ["*", '/', "Mod", "Div"]:
+            operator = self.advance().value
+            right = self.parse_primary_expressions()
+            left = BinaryOperation(left, right, operator)
+        return left 
+
+    def parse_primary_expressions(self) -> Expression:
+        token_type = self.tokens[0].type
+        if token_type == TT_Number:        
             return NumericLiteral(float(self.advance().value))
-        elif token.type == TT_Indentifier:
+        elif token_type == TT_Indentifier:
             return Indentifier(self.advance().value)
+        elif token_type == NodeVar:
+             return Var(self.advance().value)
+        elif token_type == TT_OpenParen:
+            self.advance()
+            value = self.parse_expression()
+            tt = self.advance()
+            if tt.type != TT_CloseParen: Error("missing closing parent")
+            return value
         else:
-            Error("Parser Error: Unvalid Statement")
+            Error(f"Parser Error: Unvalid Statement {self.advance()}")
             return Expression("")
 
 

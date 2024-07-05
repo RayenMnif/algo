@@ -3,6 +3,7 @@ NodeProgram = "Program"
 NodeBinaryOperation = "BinaryOperation"
 NodeIndentifier = "Indentifier"
 NodeNumericLiteral = "NumericLiteral"
+NodeVar= "Var"
 
 class Statement:
     def __init__(self, type: str) -> None:
@@ -14,7 +15,7 @@ class Program(Statement):
         self.body = body
         super().__init__(NodeProgram)
     def __repr__(self) -> str:
-        return f'("Program": (body: {self.body}))'
+        return f'{{"Program": {{body: {self.body}}}}}'
 
 
 class Expression(Statement):
@@ -27,7 +28,7 @@ class BinaryOperation(Expression):
         self.op = Op
         super().__init__(NodeBinaryOperation)
     def __repr__(self) -> str:
-        return f"({NodeBinaryOperation}: (LeftOp: {self.LeftOp}\nRightOp: {self.RightOp}\nop: {self.op}))"
+        return f"\n{{{NodeBinaryOperation}:\n\tLeftOp: {self.LeftOp},\n\top: {self.op},\n\tRightOp: {self.RightOp}\n}}\n"
 
 
 class NumericLiteral(Expression):
@@ -35,7 +36,15 @@ class NumericLiteral(Expression):
         self.value = value
         super().__init__(NodeNumericLiteral)
     def __repr__(self) -> str:
-        return f"({NodeNumericLiteral}: (value: {self.value})"
+        return f"{{{NodeNumericLiteral}: {{value: {self.value}}}}}"
+
+
+class Var(Expression):
+    def __init__(self, value: float) -> None:
+        self.value = value
+        super().__init__(NodeVar)
+    def __repr__(self) -> str:
+        return f"{{{NodeVar}: {{name: {self.value}}}}}"
 
 
 class Indentifier(Expression):
@@ -43,7 +52,7 @@ class Indentifier(Expression):
         super().__init__(NodeIndentifier) 
         self.name = name
     def __repr__(self) -> str:
-        return f"({NodeIndentifier}: (name: {self.name}))"
+        return f"{{{NodeIndentifier}: {{{self.name}}}}}"
 
 
 

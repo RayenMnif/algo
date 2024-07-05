@@ -32,7 +32,7 @@ class Token:
         self.value = value
         self.type = type
     def __repr__(self) -> str:
-        return f" ({self.value} : {self.type})"
+        return f" (value: {self.value}, type: {self.type})"
 
 
 class Lexer:
@@ -47,22 +47,29 @@ class Lexer:
     def stringify(self, src: list[str]) -> str:
         string = ""
         i = 1
-        while src[i] != src[0] and i < len(src):
-            string += src[i]
-            i += 1
+        try:
+            while src[i] != src[0] and i < len(src):
+                string += src[i]
+                i += 1
+        except:
+            Error("quotes were not close", self.PosLine)
         return string
 
     def tokinze(self) -> list[Token]:
         tokens : list[Token] = []
         src = list(self.src)
-        while len(src) != 0:
+        while src:
+
             if self.is_skippable(src[0]): src.pop(0) 
+            
             elif src[0] == "(": 
                 tokens.append(Token("(", TT_OpenParen))
                 src.pop(0)
+
             elif src[0] == ")": 
                 tokens.append(Token(")", TT_CloseParen))
                 src.pop(0)
+
             elif  src[0] == "<": 
                 if src[1] not in "-=":
                     tokens.append(Token("<", TT_Less))
@@ -75,9 +82,11 @@ class Lexer:
                     tokens.append(Token("<-", TT_Indentifier))
                     src.pop(0)
                     src.pop(0)
+
             elif src[0] in ["+", "-", "*", "/"]: 
                 tokens.append(Token(src[0], TT_BinaryOperator))
                 src.pop(0)
+
             elif src[0] == ">":
                 if src[1] != "=":
                     tokens.append(Token(">", TT_Greater))
@@ -86,28 +95,36 @@ class Lexer:
                     tokens.append(Token(">=", TT_GreaterOrEqual))
                     src.pop(0)
                     src.pop(0)
+
             elif src[0].isdigit():
                 number = ""
-                while src[0].isdigit():
+                while len(src) and src[0].isdigit():
                     number += src[0]
                     src.pop(0)
                 tokens.append(Token(float(number), TT_Number))
+
             elif src[0] == "=": 
                 tokens.append(Token("=", TT_Equels))
                 src.pop(0)
-            elif src[0]+src[1] == "!=": 
+
+            elif len(src) > 2 and src[0]+src[1] == "!=": 
                 tokens.append(Token("!=", TT_NotEqual))
+                src.pop(0)
+                src.pop(0)
+
             elif src[0] in ["'", '"']:
                 string = self.stringify(src)
                 for i in range(len(string) + 2):
                     src.pop(0)
                 tokens.append(Token(string, TT_String))
-            elif src[0].isalpha():
-                string =  ""
-                while src[0].isalpha():
-                    string += src[0]
+
+            elif src[0].isalpha() :
+                var_name =  ""
+                while src and src[0].isalpha() :
+                    var_name += src[0]
                     src.pop(0)
-                tokens.append(Token(string, TT_Var))
+                tokens.append(Token(var_name, TT_Var) if var_name not in ["mod", "div"] else Token(var_name, TT_BinaryOperator))
+
             else:
                 Error(f"Syntax Error: unkown symbol {src[0]}", self.PosLine)
 
