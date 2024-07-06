@@ -1,4 +1,5 @@
 # Nodes 
+NodeNull = "Nulle"
 NodeProgram = "Program"
 NodeBinaryOperation = "BinaryOperation"
 NodeIndentifier = "Indentifier"
@@ -22,7 +23,7 @@ class Expression(Statement):
     pass
 
 class BinaryOperation(Expression):
-    def __init__(self, LeftOp: Exception, RightOp: Exception, Op: str) -> None:
+    def __init__(self, LeftOp: Expression, RightOp: Expression, Op: str) -> None:
         self.LeftOp = LeftOp
         self.RightOp = RightOp
         self.op = Op
@@ -53,6 +54,15 @@ class Indentifier(Expression):
         self.name = name
     def __repr__(self) -> str:
         return f"{{{NodeIndentifier}: {{{self.name}}}}}"
+
+
+class Null(Expression):
+    def __init__(self, name: str) -> None:
+        super().__init__(NodeNull) 
+        self.name = name
+    def __repr__(self) -> str:
+        return f"{{{NodeNull}: {{{self.name}}}}}"
+
 
 
 

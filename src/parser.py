@@ -34,7 +34,7 @@ class Parser:
 
     def parse_multiplicitive_expressions(self) -> Expression:
         left = self.parse_primary_expressions()
-        while self.tokens[0].value in ["*", '/', "Mod", "Div"]:
+        while self.tokens[0].value in ["*", '/', "mod", "div"]:
             operator = self.advance().value
             right = self.parse_primary_expressions()
             left = BinaryOperation(left, right, operator)
@@ -54,6 +54,8 @@ class Parser:
             tt = self.advance()
             if tt.type != TT_CloseParen: Error("missing closing parent")
             return value
+        elif token_type == TT_Null:
+            return Null(self.advance().value)
         else:
             Error(f"Parser Error: Unvalid Statement {self.advance()}")
             return Expression("")

@@ -20,8 +20,7 @@ TT_BinaryOperator = "BinaryOperator"
 # --- keywords ---
 TT_Vrai = "Vrai"
 TT_Faux = "Faux"
-TT_Mod = "Mod"
-TT_Div = "Div"
+TT_Null = "nulle"
 # --- symbols ---
 TT_OpenParen = "OpenParen"
 TT_CloseParen = "CloseParen"
@@ -119,11 +118,11 @@ class Lexer:
                 tokens.append(Token(string, TT_String))
 
             elif src[0].isalpha() :
-                var_name =  ""
+                keyword =  ""
                 while src and src[0].isalpha() :
-                    var_name += src[0]
+                    keyword += src[0]
                     src.pop(0)
-                tokens.append(Token(var_name, TT_Var) if var_name not in ["mod", "div"] else Token(var_name, TT_BinaryOperator))
+                tokens.append(Token(keyword, TT_Var) if keyword not in ["mod", "div", "nulle"] else Token(keyword, TT_BinaryOperator) if keyword in ["mod", "div"] else Token(keyword, TT_Null))
 
             else:
                 Error(f"Syntax Error: unkown symbol {src[0]}", self.PosLine)
