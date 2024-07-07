@@ -1,5 +1,7 @@
+AssignmentValue : str = "Assignment"
 NumberValue : str = "number"
 NullValue : str = "nulle"
+BooleanValue : str = "booleen"
 
 class RunTime:
     def __init__(self, type: str) -> None:
@@ -15,6 +17,14 @@ class NumberVal(RunTime):
 class NullVal(RunTime):
     def __init__(self) -> None:
         self.value = None
-        super().__init__(NullVal)
+        super().__init__(NullValue)
     def __repr__(self) -> str:
         return f"{{value : nulle, type: nulle}}"
+
+
+class BooleanVal(RunTime):
+    def __init__(self, value: bool) -> None:
+        super().__init__(BooleanValue)
+        self.value = value
+    def __repr__(self) -> str:
+        return f"{{value : {self.value}, type: {BooleanValue}}}"
