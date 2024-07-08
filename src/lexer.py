@@ -8,23 +8,30 @@ TT_Number = "Number"
 TT_String = "String"
 # --- var related ---
 TT_Var = "Var"
-TT_Indentifier = "Indentifier"
+TT_Asignment = "Asignment"
 # --- operations ---
-TT_Equels = "Equals"
-TT_NotEqual = "Not Equals"
-TT_Less = "LESS"
-TT_Greater = "Grater"
-TT_GreaterOrEqual = "GraterOrEqual"
-TT_LessOrEqual = "LessOrEqual"
 TT_BinaryOperator = "BinaryOperator"
+TT_BooleanOperator = "BooleanOperator"
 # --- keywords ---
-TT_Vrai = "Vrai"
-TT_Faux = "Faux"
 TT_Null = "nulle"
+# --- fonctions ---
+TT_Procedure = "procedure"
+TT_fonction = "fonction"
 # --- symbols ---
 TT_OpenParen = "OpenParen"
 TT_CloseParen = "CloseParen"
+TT_Debut = "Debut"
+TT_Fin = "Fin"
 
+KEYWORDS = {"div": TT_BinaryOperator,
+            "mod": TT_BinaryOperator,
+            "nulle": TT_Null,
+            "procedure": TT_Procedure,
+            "fonction": TT_fonction,
+            "debut": TT_Debut,
+            "fin": TT_Fin,
+            "ou": TT_BooleanOperator,
+            "et": TT_BooleanOperator}
 
 class Token:
     def __init__(self, value, type: str) -> None:
@@ -71,14 +78,14 @@ class Lexer:
 
             elif  src[0] == "<": 
                 if src[1] not in "-=":
-                    tokens.append(Token("<", TT_Less))
+                    tokens.append(Token("<", TT_BooleanOperator))
                     src.pop(0)
                 elif src[1] == "=": 
-                    tokens.append(Token("<=", TT_LessOrEqual))
+                    tokens.append(Token("<=", TT_BooleanOperator))
                     src.pop(0)
                     src.pop(0)
                 else:
-                    tokens.append(Token("<-", TT_Indentifier))
+                    tokens.append(Token("<-", TT_Asignment))
                     src.pop(0)
                     src.pop(0)
 
@@ -88,10 +95,10 @@ class Lexer:
 
             elif src[0] == ">":
                 if src[1] != "=":
-                    tokens.append(Token(">", TT_Greater))
+                    tokens.append(Token(">", TT_BooleanOperator))
                     src.pop(0)
                 else:
-                    tokens.append(Token(">=", TT_GreaterOrEqual))
+                    tokens.append(Token(">=", TT_BooleanOperator))
                     src.pop(0)
                     src.pop(0)
 
@@ -103,11 +110,11 @@ class Lexer:
                 tokens.append(Token(float(number), TT_Number))
 
             elif src[0] == "=": 
-                tokens.append(Token("=", TT_Equels))
+                tokens.append(Token("=", TT_BooleanOperator))
                 src.pop(0)
 
             elif len(src) > 2 and src[0]+src[1] == "!=": 
-                tokens.append(Token("!=", TT_NotEqual))
+                tokens.append(Token("!=", TT_BooleanOperator))
                 src.pop(0)
                 src.pop(0)
 
@@ -122,7 +129,7 @@ class Lexer:
                 while src and src[0].isalpha() :
                     keyword += src[0]
                     src.pop(0)
-                tokens.append(Token(keyword, TT_Var) if keyword not in ["mod", "div", "nulle"] else Token(keyword, TT_BinaryOperator) if keyword in ["mod", "div"] else Token(keyword, TT_Null))
+                tokens.append(Token(keyword, TT_Var) if keyword not in KEYWORDS.keys() else Token(keyword, KEYWORDS[keyword]))
 
             else:
                 Error(f"Syntax Error: unkown symbol {src[0]}", self.PosLine)

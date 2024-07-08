@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 from rich import print
+from runtime.environment import Environment
 from src.parser import *
 from src.lexer import * 
 from sys import argv, exit
@@ -8,6 +9,11 @@ from runtime.interpreter import *
 
 
 def main():
+    
+    env = Environment()
+    env.assignVar("vrai", BooleanVal(True))
+    env.assignVar("faux", BooleanVal(False))
+
     if len(argv) not in [2, 1]:
         print("Usage: algo [script]")
         exit(0)
@@ -15,7 +21,7 @@ def main():
     if len(argv) == 2:
         with open(argv[1], "r") as script:
             src = script.read()
-            print(Parser(src).tokens)#.produce_ast()
+            print(evaluate(Parser(src).produce_ast(), env))#.produce_ast()
     else:
         print(""" 
          ▄▄▄       ██▓      ▄████  ▒█████  
@@ -40,9 +46,9 @@ def main():
                 prompt = input(">> ")
                 if prompt.upper() in ["EXIT", "QUIT"]: exit()
                 program = Parser(prompt).produce_ast()
-                # program = Parser(prompt).tokens
+                # print(Parser(prompt).tokens)
                 print(program)
-                print(f"\n-------------------\n{evaluate(program)}")
+                print(f"------------------------------------\n{evaluate(program, env)}")
             except KeyboardInterrupt:
                 exit()
             except EOFError:

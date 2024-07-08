@@ -4,6 +4,31 @@ from runtime.value import *
 from src.ast import *
 
 
+def eval_boolean_operation(bo: BooleanOperation, env: Environment) -> RunTime:
+    left = evaluate(bo.LeftOp, env)
+    right = evaluate(bo.RightOp, env)
+    op = bo.op
+    if right.type == NumberValue and left.type == NumberValue:
+        left = left.value
+        right = right.value
+        if op == ">": result = left > right
+        elif op == "<": result = left < right
+        elif op == ">=": result = left >= right
+        elif op == "<=": result = left <= right
+        elif op == "=": result = left == right
+        elif op == "!=": result = left != right
+        else: Error("or, et works only with bools")
+    else:
+        left = left.value
+        right = right.value
+        if op == "ou": result = left or right
+        elif op == "et": result = left and right
+        elif op == "=": result = left == right
+        elif op == "!=": result = left != right
+        else: Error("You can only compare Numeric values")
+    return BooleanVal(result)
+        
+
 def eval_binary_operation(binop: BinaryOperation, env: Environment) -> RunTime:
     left = evaluate(binop.LeftOp, env)
     right = evaluate(binop.RightOp, env)
@@ -15,23 +40,18 @@ def eval_binary_operation(binop: BinaryOperation, env: Environment) -> RunTime:
 def eval_numeric_binary_expression(LeftOp: NumberVal, RightOp: NumberVal, op) -> NumberVal:
     left = LeftOp.value
     right = RightOp.value
-    if op == "+":
-        result = left + right
-    elif op == "-":
-        result = left - right
-    elif op == "*":
-        result = left * right
+    if op == "+": result = left + right
+    elif op == "-": result = left - right
+    elif op == "*": result = left * right
     elif op == "/":
         if right == 0:
             Error("ZeroDivisionError: division by zero")
         result = left / right
-    elif op == "mod":
-        result = left % right
+    elif op == "mod": result = left % right
     elif op == "div":
         if right == 0:
             Error("ZeroDivisionError: division by zero")
         result = left // right
-    print(f"result : {result}")
     return NumberVal(result)
 
 def eval_program(program : Program, env: Environment) -> RunTime:
@@ -61,4 +81,6 @@ def evaluate(astNode: Statement, env: Environment) -> RunTime:
         return NullVal()
     elif astNode.type == NodeVar:
         return eval_Var(astNode, env)
+    elif astNode.type == NodeBooleanOperation:
+        return eval_boolean_operation(astNode, env)
     else: Error("Unvalid returning value") 

@@ -22,7 +22,24 @@ class Parser:
         return self.parse_expression()
 
     def parse_expression(self) -> Expression:
-        return self.parse_additive_expressions()
+        return self.parse_assignment_expressions()
+
+    def parse_assignment_expressions(self):
+        left = self.parse_boolean_expression()
+        if self.tokens[0].value == "<-":
+            self.advance()
+            right = self.parse_assignment_expressions()
+            left = Assignment(left, right)
+        return left
+
+    def parse_boolean_expression(self) -> Expression:
+        left = self.parse_additive_expressions()
+        if self.tokens[0].type == TT_BooleanOperator:
+            op = self.advance().value
+            right = self.parse_boolean_expression()
+            left = BooleanOperation(left, right, op)
+        return left
+
 
     def parse_additive_expressions(self) -> Expression:
         left = self.parse_multiplicitive_expressions()
@@ -44,8 +61,6 @@ class Parser:
         token_type = self.tokens[0].type
         if token_type == TT_Number:        
             return NumericLiteral(float(self.advance().value))
-        elif token_type == TT_Indentifier:
-            return Indentifier(self.advance().value)
         elif token_type == NodeVar:
              return Var(self.advance().value)
         elif token_type == TT_OpenParen:
