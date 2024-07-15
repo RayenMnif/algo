@@ -20,8 +20,16 @@ TT_fonction = "fonction"
 # --- symbols ---
 TT_OpenParen = "OpenParen"
 TT_CloseParen = "CloseParen"
+TT_OpenBrace = "OpenBrace"
+TT_CloseBrace = "CLoseBrace"
 TT_Debut = "Debut"
 TT_Fin = "Fin"
+# --- if Statement ----
+TT_if = "si"
+TT_elif = "sinon_si"
+TT_else = "sinon"
+TT_alors = "alors"
+TT_finsi = "fin_si"
 
 KEYWORDS = {"div": TT_BinaryOperator,
             "mod": TT_BinaryOperator,
@@ -31,7 +39,12 @@ KEYWORDS = {"div": TT_BinaryOperator,
             "debut": TT_Debut,
             "fin": TT_Fin,
             "ou": TT_BooleanOperator,
-            "et": TT_BooleanOperator}
+            "et": TT_BooleanOperator,
+            "si": TT_if,
+            "sinon_si": TT_elif,
+            "sinon": TT_else,
+            "alors": TT_alors,
+            "fin_si": TT_finsi}
 
 class Token:
     def __init__(self, value, type: str) -> None:
@@ -75,6 +88,15 @@ class Lexer:
             elif src[0] == ")": 
                 tokens.append(Token(")", TT_CloseParen))
                 src.pop(0)
+
+            elif src[0] == "[": 
+                tokens.append(Token("(", TT_OpenBrace))
+                src.pop(0)
+
+            elif src[0] == "]": 
+                tokens.append(Token(")", TT_CloseBrace))
+                src.pop(0)
+
 
             elif  src[0] == "<": 
                 if src[1] not in "-=":
@@ -124,9 +146,9 @@ class Lexer:
                     src.pop(0)
                 tokens.append(Token(string, TT_String))
 
-            elif src[0].isalpha() :
+            elif src[0].isalpha() or src[0] == "_":
                 keyword =  ""
-                while src and src[0].isalpha() :
+                while src and (src[0].isalpha() or src[0] == "_"):
                     keyword += src[0]
                     src.pop(0)
                 tokens.append(Token(keyword, TT_Var) if keyword not in KEYWORDS.keys() else Token(keyword, KEYWORDS[keyword]))

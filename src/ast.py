@@ -1,4 +1,7 @@
 # Nodes 
+NodeBlockStatement = "BlockStatemnt"
+NodeIfStatement = "IfStatment"
+NodeCallExpresstion = "CallExpresstion"
 NodeNull = "Nulle"
 NodeProgram = "Program"
 NodeBinaryOperation = "BinaryOperation"
@@ -18,6 +21,14 @@ class Program(Statement):
         super().__init__(NodeProgram)
     def __repr__(self) -> str:
         return f'{{"Program": {{body: {self.body}}}}}'
+
+class BlockStatemnt(Statement):
+    def __init__(self, body: list[Statement]) -> None:
+        self.body = body
+        super().__init__(NodeBlockStatement)
+    def __repr__(self) -> str:
+        return f'{{"BlockStatemnt": {{body: {self.body}}}}}'
+
 
 
 class Expression(Statement):
@@ -76,6 +87,23 @@ class Null(Expression):
     def __repr__(self) -> str:
         return f"{{{NodeNull}: {{{self.name}}}}}"
 
+
+class CallExpresstion(Expression):
+    def __init__(self, callee: Expression,  args: list[Expression]) -> None:
+        super().__init__(NodeCallExpresstion) 
+        self.callee = callee
+        self.args = args 
+    def __repr__(self) -> str:
+        return f"{{callee : {self.callee}, args: {{{self.args}}}}}"
+
+
+class IfStatment(Expression):
+    def __init__(self, cases: list[Expression],  else_case: Expression | None) -> None:
+        super().__init__(NodeCallExpresstion) 
+        self.cases = cases
+        self.else_case = else_case
+    def __repr__(self) -> str:
+        return f"{{IfStatment: cases : {self.cases}, else_case: {{{self.else_case}}}}}"
 
 
 

@@ -1,3 +1,4 @@
+from typing import List
 from src.lexer import *
 from src.ast import *
 from src.utils import Error
@@ -20,6 +21,13 @@ class Parser:
 
     def parse_statement(self) -> Statement:
         return self.parse_expression()
+
+    def parse_block_statement(self, end_parsing_array: List[str]) -> BlockStatemnt:
+        blockStatemnt = BlockStatemnt([])
+        while self.tokens[0].type not in end_parsing_array:
+            blockStatemnt.body.append(self.parse_statement())
+        return blockStatemnt
+
 
     def parse_expression(self) -> Expression:
         return self.parse_assignment_expressions()
@@ -57,6 +65,33 @@ class Parser:
             left = BinaryOperation(left, right, operator)
         return left 
 
+    def parse_if_expression(self) -> Expression:
+        cases = []
+        else_case = None
+        self.advance()
+        condition = self.parse_boolean_expression()
+        if condition.type != NodeBooleanOperation: Error("Is that even a condition")
+        if self.tokens[0].type != TT_alors: Error("Excepted 'alors'")
+        self.advance()
+        statement = self.parse_block_statement([TT_elif, TT_else, TT_finsi])
+        cases.append((condition, statement))
+        while self.tokens[0].type == TT_elif:
+            self.advance()
+            condition = self.parse_boolean_expression()
+            if condition.type != NodeBooleanOperation: Error("Is that even a condition")
+            if self.tokens[0].type != TT_alors: Error("Excepted 'alors'")
+            self.advance()
+            statement = self.parse_block_statement([TT_elif, TT_else, TT_finsi])
+            cases.append((condition, statement))
+        if self.tokens[0].type == TT_else:
+            self.advance()
+            else_case = self.parse_block_statement([TT_elif, TT_else, TT_finsi])
+        if self.tokens[0].type == TT_finsi:
+            self.advance()
+            return IfStatment(cases, else_case)
+        else: Error("Excepted 'fin_si'")
+
+
     def parse_primary_expressions(self) -> Expression:
         token_type = self.tokens[0].type
         if token_type == TT_Number:        
@@ -69,6 +104,8 @@ class Parser:
             tt = self.advance()
             if tt.type != TT_CloseParen: Error("missing closing parent")
             return value
+        elif token_type == TT_if:
+            return self.parse_if_expression()
         elif token_type == TT_Null:
             return Null(self.advance().value)
         else:

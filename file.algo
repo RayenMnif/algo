@@ -1,2 +1,8 @@
-hi <- 34
-number <- hi - 10
+si faux = faux alors
+    x <- 2
+sinon_si faux != faux alors
+    x <- 3
+sinon
+    x <- 3
+fin_si
+

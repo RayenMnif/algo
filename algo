@@ -21,7 +21,10 @@ def main():
     if len(argv) == 2:
         with open(argv[1], "r") as script:
             src = script.read()
-            print(evaluate(Parser(src).produce_ast(), env))#.produce_ast()
+            program = Parser(src).produce_ast()
+            print(program)
+            print("-----------------------------")
+            print(evaluate(program, env))#.produce_ast()
     else:
         print(""" 
          ▄▄▄       ██▓      ▄████  ▒█████  
@@ -48,7 +51,8 @@ def main():
                 program = Parser(prompt).produce_ast()
                 # print(Parser(prompt).tokens)
                 print(program)
-                print(f"------------------------------------\n{evaluate(program, env)}")
+                print("------------------------------------")
+                print(evaluate(program, env))
             except KeyboardInterrupt:
                 exit()
             except EOFError:
