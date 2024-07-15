@@ -30,6 +30,15 @@ TT_elif = "sinon_si"
 TT_else = "sinon"
 TT_alors = "alors"
 TT_finsi = "fin_si"
+# --- loops ----
+TT_tantque = "tant_que"
+TT_faire = "faire"
+TT_fintanque = "fin_tant_que"
+TT_repeter = "repeter"
+TT_jusqua = "jusqu'a"
+TT_pour = "pour"
+TT_faire = "faire"
+
 
 KEYWORDS = {"div": TT_BinaryOperator,
             "mod": TT_BinaryOperator,
@@ -44,7 +53,16 @@ KEYWORDS = {"div": TT_BinaryOperator,
             "sinon_si": TT_elif,
             "sinon": TT_else,
             "alors": TT_alors,
-            "fin_si": TT_finsi}
+            "fin_si": TT_finsi,
+            "tant_que": TT_tantque,
+            "faire": TT_faire,
+            "fin_tant_que": TT_fintanque,
+            "jusqu'a": TT_jusqua,
+            "repeter": TT_repeter,
+            "répéter": TT_repeter,
+            "debut": TT_Debut,
+            "début": TT_Debut,
+            "fin": TT_Fin}
 
 class Token:
     def __init__(self, value, type: str) -> None:
@@ -125,8 +143,14 @@ class Lexer:
                     src.pop(0)
 
             elif src[0].isdigit():
+                is_float = False
                 number = ""
-                while len(src) and src[0].isdigit():
+                while len(src) and (src[0].isdigit() or src[0] == "."):
+                    if src[0] == ".":
+                        if is_float:
+                            Error("unvalid number", self.PosLine)
+                        else:
+                            is_float = True
                     number += src[0]
                     src.pop(0)
                 tokens.append(Token(float(number), TT_Number))
@@ -146,9 +170,9 @@ class Lexer:
                     src.pop(0)
                 tokens.append(Token(string, TT_String))
 
-            elif src[0].isalpha() or src[0] == "_":
+            elif src[0].isalpha() or src[0] in "_'":
                 keyword =  ""
-                while src and (src[0].isalpha() or src[0] == "_"):
+                while src and (src[0].isalpha() or src[0] in "_'"):
                     keyword += src[0]
                     src.pop(0)
                 tokens.append(Token(keyword, TT_Var) if keyword not in KEYWORDS.keys() else Token(keyword, KEYWORDS[keyword]))
