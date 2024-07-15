@@ -88,7 +88,7 @@ class Parser:
             else_case = self.parse_block_statement([TT_elif, TT_else, TT_finsi])
         if self.tokens[0].type == TT_finsi:
             self.advance()
-            return IfStatment(cases, else_case)
+            return ifStatement(cases, else_case)
         else: Error("Excepted 'fin_si'")
 
 

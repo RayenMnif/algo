@@ -4,6 +4,18 @@ from runtime.value import *
 from src.ast import *
 
 
+def is_true(condition, env):
+    return eval_boolean_operation(condition, env).value
+
+
+def eval_if_statement(ifStmnt: ifStatement, env: Environment) -> RunTime:
+    for condition, statement in ifStmnt.cases:
+        if is_true(condition, env):
+            return evaluate(statement, env)
+    if ifStmnt.else_case:
+        return evaluate(else_case, env)
+
+
 def eval_boolean_operation(bo: BooleanOperation, env: Environment) -> RunTime:
     left = evaluate(bo.LeftOp, env)
     right = evaluate(bo.RightOp, env)
@@ -68,19 +80,20 @@ def eval_assignment(assig: Assignment, env: Environment):
     if assig.var.type != NodeVar: Error(f"Looks like you're wrongly assigning the variable")
     return env.assignVar(assig.var.name, evaluate(assig.value, env))
 
+def eval_block_statement(block: BlockStatemnt, env: Environment):
+    last_evaluated = NullVal()
+    for statement in block.body:
+        last_evaluated = evaluate(statement, env)
+    return last_evaluated
+
 def evaluate(astNode: Statement, env: Environment) -> RunTime:
-    if astNode.type == NodeBinaryOperation:
-        return eval_binary_operation(astNode, env)
-    elif astNode.type == NodeAssignment:
-        return eval_assignment(astNode, env)
-    elif astNode.type == NodeNumericLiteral:
-        return NumberVal(astNode.value)
-    elif astNode.type == NodeProgram:
-        return eval_program(astNode, env)
-    elif astNode.type == NodeNull:
-        return NullVal()
-    elif astNode.type == NodeVar:
-        return eval_Var(astNode, env)
-    elif astNode.type == NodeBooleanOperation:
-        return eval_boolean_operation(astNode, env)
+    if astNode.type == NodeBinaryOperation: return eval_binary_operation(astNode, env)
+    elif astNode.type == NodeAssignment: return eval_assignment(astNode, env)
+    elif astNode.type == NodeNumericLiteral: return NumberVal(astNode.value)
+    elif astNode.type == NodeProgram: return eval_program(astNode, env)
+    elif astNode.type == NodeNull: return NullVal()
+    elif astNode.type == NodeVar: return eval_Var(astNode, env)
+    elif astNode.type == NodeIfStatement: return eval_if_statement(astNode, env)
+    elif astNode.type == NodeBooleanOperation: return eval_boolean_operation(astNode, env)
+    elif astNode.type == NodeBlockStatement: return eval_block_statement(astNode, env)
     else: Error("Unvalid returning value") 

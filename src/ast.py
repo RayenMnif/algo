@@ -30,7 +30,6 @@ class BlockStatemnt(Statement):
         return f'{{"BlockStatemnt": {{body: {self.body}}}}}'
 
 
-
 class Expression(Statement):
     pass
 
@@ -97,13 +96,10 @@ class CallExpresstion(Expression):
         return f"{{callee : {self.callee}, args: {{{self.args}}}}}"
 
 
-class IfStatment(Expression):
+class ifStatement(Expression):
     def __init__(self, cases: list[Expression],  else_case: Expression | None) -> None:
-        super().__init__(NodeCallExpresstion) 
+        super().__init__(NodeIfStatement) 
         self.cases = cases
         self.else_case = else_case
     def __repr__(self) -> str:
         return f"{{IfStatment: cases : {self.cases}, else_case: {{{self.else_case}}}}}"
-
-
-
