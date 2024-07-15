@@ -25,6 +25,7 @@ class Parser:
     def parse_block_statement(self, end_parsing_array: List[str]) -> BlockStatemnt:
         blockStatemnt = BlockStatemnt([])
         while self.tokens[0].type not in end_parsing_array:
+            if self.tokens[0].type == TT_EOF: Error("you forgot to close the statement")
             blockStatemnt.body.append(self.parse_statement())
         return blockStatemnt
 
@@ -91,6 +92,28 @@ class Parser:
             return ifStatement(cases, else_case)
         else: Error("Excepted 'fin_si'")
 
+    def parse_tantque_loop(self):
+        self.advance()
+        condition = self.parse_boolean_expression()
+        if condition.type != NodeBooleanOperation: Error("Is that even a condition")
+        if self.tokens[0].type != TT_faire: Error("Excepted 'faire'")
+        self.advance()
+        statement = self.parse_block_statement([TT_fintanque])
+        if self.tokens[0].type == TT_fintanque:
+            self.advance()
+            return loopTantqueRepeter(condition, statement, True)
+        else: Error("Excepted 'fin_tant_que'")
+
+    def parse_repeter_loop(self):
+        self.advance()
+        statement = self.parse_block_statement([TT_jusqua])
+        print(f"statement : {statement}")
+        if self.tokens[0].type != TT_jusqua: Error("Excepted 'jusqu\'a'")
+        self.advance()
+        condition = self.parse_boolean_expression()
+        if condition.type != NodeBooleanOperation: Error("Is that even a condition")
+        return loopTantqueRepeter(condition, statement, False)
+
 
     def parse_primary_expressions(self) -> Expression:
         token_type = self.tokens[0].type
@@ -108,6 +131,8 @@ class Parser:
             return self.parse_if_expression()
         elif token_type == TT_Null:
             return Null(self.advance().value)
+        elif token_type == TT_tantque: return self.parse_tantque_loop()
+        elif token_type == TT_repeter: return self.parse_repeter_loop()
         else:
             Error(f"Parser Error: Unvalid Statement {self.advance()}")
             return Expression("")

@@ -1,9 +1,5 @@
 x <- 1
-si faux != faux alors
-    x <- 2
-sinon_si faux = faux alors
-    x <- 3 + x
-sinon
-    x <- 5
-fin_si
-
+repeter
+    x <- x + 1
+jusqu'a x < 5
+x

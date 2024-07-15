@@ -80,11 +80,22 @@ def eval_assignment(assig: Assignment, env: Environment):
     if assig.var.type != NodeVar: Error(f"Looks like you're wrongly assigning the variable")
     return env.assignVar(assig.var.name, evaluate(assig.value, env))
 
-def eval_block_statement(block: BlockStatemnt, env: Environment):
+def eval_block_statement(block: BlockStatemnt, env: Environment) -> RunTime:
     last_evaluated = NullVal()
     for statement in block.body:
         last_evaluated = evaluate(statement, env)
     return last_evaluated
+
+def eval_loop_tantque_repeter(loop: loopTantqueRepeter, env: Environment) -> RunTime:
+    if not loop.tant_que:
+        evaluate(loop.stmnt, env)
+        while not is_true(loop.condition, env):
+            evaluate(loop.stmnt, env)
+    else:
+        while is_true(loop.condition, env):
+            evaluate(loop.stmnt, env)
+    return NullVal()
+    
 
 def evaluate(astNode: Statement, env: Environment) -> RunTime:
     if astNode.type == NodeBinaryOperation: return eval_binary_operation(astNode, env)
@@ -96,4 +107,5 @@ def evaluate(astNode: Statement, env: Environment) -> RunTime:
     elif astNode.type == NodeIfStatement: return eval_if_statement(astNode, env)
     elif astNode.type == NodeBooleanOperation: return eval_boolean_operation(astNode, env)
     elif astNode.type == NodeBlockStatement: return eval_block_statement(astNode, env)
+    elif astNode.type == NodeLoopTantqueRepeter: return eval_loop_tantque_repeter(astNode, env)
     else: Error("Unvalid returning value") 

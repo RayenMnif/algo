@@ -1,4 +1,6 @@
 # Nodes 
+NodeLoopTantqueRepeter = "LoopTantqueRepeter"
+NodeForLoop = "ForLoop"
 NodeBlockStatement = "BlockStatemnt"
 NodeIfStatement = "IfStatment"
 NodeCallExpresstion = "CallExpresstion"
@@ -93,13 +95,25 @@ class CallExpresstion(Expression):
         self.callee = callee
         self.args = args 
     def __repr__(self) -> str:
-        return f"{{callee : {self.callee}, args: {{{self.args}}}}}"
+        return f"{{function call :\n callee : {self.callee}, args: {{{self.args}}}}}"
 
 
 class ifStatement(Expression):
-    def __init__(self, cases: list[Expression],  else_case: Expression | None) -> None:
+    def __init__(self, cases: list[Expression],  else_case: BlockStatemnt | None) -> None:
         super().__init__(NodeIfStatement) 
         self.cases = cases
         self.else_case = else_case
     def __repr__(self) -> str:
         return f"{{IfStatment: cases : {self.cases}, else_case: {{{self.else_case}}}}}"
+
+
+class loopTantqueRepeter(Statement):
+    def __init__(self, condition: Expression, stmnt: BlockStatemnt, tant_que: bool) -> None:
+        super().__init__(NodeLoopTantqueRepeter) 
+        self.condition = condition
+        self.stmnt = stmnt
+        self.tant_que = tant_que
+    def __repr__(self) -> str:
+        return f"{{loop :\ncondition : {self.condition}, Statement: {{{self.stmnt}}}}}"
+
+
