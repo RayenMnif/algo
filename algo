@@ -19,12 +19,14 @@ def main():
         exit(0)
 
     if len(argv) == 2:
-        with open(argv[1], "r") as script:
-            src = script.read()
-            program = Parser(src).produce_ast()
-            print(program)
-            print("-----------------------------")
-            print(evaluate(program, env))#.produce_ast()
+        try:
+            with open(argv[1], "r") as script:
+                src = script.read()
+                program = Parser(src).produce_ast()
+                print(program)
+                print("-----------------------------")
+                print(evaluate(program, env))#.produce_ast()
+        except FileNotFoundError: Error("FileNotFoundError: Canno't find the file you're looking for")
     else:
         print(""" 
          ▄▄▄       ██▓      ▄████  ▒█████  
@@ -48,6 +50,8 @@ def main():
             try:
                 prompt = input(">> ")
                 if prompt.upper() in ["EXIT", "QUIT"]: exit()
+                if prompt.upper() == "CREDITS": print("project by Rayen Mnif")
+                if prompt.upper() == "HELP": print("the docs are not available at the moment")
                 program = Parser(prompt).produce_ast()
                 # print(Parser(prompt).tokens)
                 print(program)
