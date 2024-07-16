@@ -37,7 +37,9 @@ TT_fintanque = "fin_tant_que"
 TT_repeter = "repeter"
 TT_jusqua = "jusqu'a"
 TT_pour = "pour"
+TT_pas = "pas"
 TT_faire = "faire"
+TT_finpour = "fin_pour"
 
 
 KEYWORDS = {"div": TT_BinaryOperator,
@@ -62,7 +64,10 @@ KEYWORDS = {"div": TT_BinaryOperator,
             "répéter": TT_repeter,
             "debut": TT_Debut,
             "début": TT_Debut,
-            "fin": TT_Fin}
+            "pour": TT_pour,
+            "fin": TT_Fin,
+            "pas": TT_pas,
+            "fin_pour": TT_finpour}
 
 class Token:
     def __init__(self, value, type: str) -> None:
@@ -153,7 +158,7 @@ class Lexer:
                             is_float = True
                     number += src[0]
                     src.pop(0)
-                tokens.append(Token(float(number), TT_Number))
+                tokens.append(Token(number, TT_Number))
 
             elif src[0] == "=": 
                 tokens.append(Token("=", TT_BooleanOperator))

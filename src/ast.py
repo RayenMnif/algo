@@ -1,4 +1,7 @@
 # Nodes 
+from typing import List
+
+
 NodeLoopTantqueRepeter = "LoopTantqueRepeter"
 NodeForLoop = "ForLoop"
 NodeBlockStatement = "BlockStatemnt"
@@ -115,5 +118,14 @@ class loopTantqueRepeter(Statement):
         self.tant_que = tant_que
     def __repr__(self) -> str:
         return f"{{loop :\ncondition : {self.condition}, Statement: {{{self.stmnt}}}}}"
+
+
+class forLoop(Statement):
+    def __init__(self,i: List[Expression], stmnt: BlockStatemnt) -> None:
+        super().__init__(NodeForLoop) 
+        self.i = i
+        self.stmnt = stmnt
+    def __repr__(self) -> str:
+        return f"{{for loop :\ni : {self.i}, Statement: {{{self.stmnt}}}}}"
 
 

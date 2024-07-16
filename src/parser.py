@@ -114,13 +114,52 @@ class Parser:
         if condition.type != NodeBooleanOperation: Error("Is that even a condition")
         return loopTantqueRepeter(condition, statement, False)
 
+    def parse_for_loop(self):
+        self.advance()
+        i = self.advance()
+        if i.type != TT_Var:
+            Error("unvalid for loops structure\npour <var> de <number> a <number> (pas <number>)? faire\n\t<statement>\nfin_pour")
+        de = self.advance()
+        if de.type != TT_Var and de.value != "de": 
+            Error("unvalid for loops structure\npour <var> de <number> a <number> (pas <number>)? faire\n\t<statement>\nfin_pour")
+        num1 = self.parse_additive_expressions()
+        if num1.type != NodeNumericLiteral:
+            Error("unvalid for loops structure\npour <var> de <number> a <number> (pas <number>)? faire\n\t<statement>\nfin_pour")
+        a = self.advance()
+        if a.type != TT_Var and a.value != "a": 
+            Error("unvalid for loops structure\npour <var> de <number> a <number> (pas <number>)? faire\n\t<statement>\nfin_pour")
+        num2 = self.parse_additive_expressions()
+        if num2.type != NodeNumericLiteral:
+            Error("unvalid for loops structure\npour <var> de <number> a <number> (pas <number>)? faire\n\t<statement>\nfin_pour")
+        if num1.value > num2.value : 
+            Error("unvalid for loops structure\nnum1 is greater the num2")
+        if self.tokens[0].type != TT_pas:
+            faire = self.advance()
+            if faire.type != TT_faire:
+                Error("unvalid for loops structure\nnum1 is greater the num2")
+            if faire.type != TT_faire:
+                Error("unvalid for loops structure\nnum1 is greater the num2")
+            statement = self.parse_block_statement([TT_finpour])
+            self.advance()
+            return forLoop([num1, num2], statement)
+        else:
+            self.advance()
+            pas = self.parse_additive_expressions()
+            if pas.type != NodeNumericLiteral: 
+                Error("unvalid for loops structure\npour <var> de <number> a <number> (pas <number>)? faire\n\t<statement>\nfin_pour")
+            if pas.value > num2.value : 
+                Error("unvalid for loops structure\npas is greater the num2")
+            faire = self.advance()
+            if faire.type != TT_faire:
+                Error("unvalid for loops structure\nnum1 is greater the num2")
+            statement = self.parse_block_statement([TT_finpour])
+            self.advance()
+            return forLoop([num1, num2, pas], statement)
 
     def parse_primary_expressions(self) -> Expression:
         token_type = self.tokens[0].type
-        if token_type == TT_Number:        
-            return NumericLiteral(float(self.advance().value))
-        elif token_type == NodeVar:
-             return Var(self.advance().value)
+        if token_type == TT_Number: return NumericLiteral(float(self.advance().value))
+        elif token_type == NodeVar: return Var(self.advance().value)
         elif token_type == TT_OpenParen:
             self.advance()
             value = self.parse_expression()
@@ -133,6 +172,7 @@ class Parser:
             return Null(self.advance().value)
         elif token_type == TT_tantque: return self.parse_tantque_loop()
         elif token_type == TT_repeter: return self.parse_repeter_loop()
+        elif token_type == TT_pour: return self.parse_for_loop()
         else:
             Error(f"Parser Error: Unvalid Statement {self.advance()}")
             return Expression("")

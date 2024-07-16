@@ -1,5 +1,4 @@
-x <- 1
-repeter
-    x <- x + 1
-jusqu'a x < 5
-x
+pour i de 0 a 2 pas 1 faire
+    x <- 3
+fin_pour
+
