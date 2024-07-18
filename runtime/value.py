@@ -1,7 +1,8 @@
-AssignmentValue : str = "Assignment"
-NumberValue : str = "number"
-NullValue : str = "nulle"
-BooleanValue : str = "booleen"
+AssignmentValue = "Assignment"
+NumberValue = "number"
+NullValue = "nulle"
+BooleanValue = "booleen"
+NativeFnvalue = "NativeFunction"
 
 class RunTime:
     def __init__(self, type: str) -> None:
@@ -28,3 +29,10 @@ class BooleanVal(RunTime):
         self.value = value
     def __repr__(self) -> str:
         return f"{{value : {self.value}, type: {BooleanValue}}}"
+
+class NativeFnVal(RunTime):
+    def __init__(self, call) -> None:
+        super().__init__(NativeFnvalue)
+        self.call = call
+    def __repr__(self) -> str:
+        return f"{{{NativeFnValue}: {self.call}}}"

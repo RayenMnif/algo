@@ -96,6 +96,11 @@ def eval_loop_tantque_repeter(loop: loopTantqueRepeter, env: Environment) -> Run
             evaluate(loop.stmnt, env)
     return NullVal()
     
+def eval_call_expression(function: CallExpresstion, env: Environment) -> RunTime:
+    caller : NativeFnVal = evaluate(function.callee, env) 
+    if caller.type != NativeFnvalue : Error("You can only call functions")
+    result = caller.call([evaluate(arg, env) for arg in function.args])
+    return result
 
 def evaluate(astNode: Statement, env: Environment) -> RunTime:
     if astNode.type == NodeBinaryOperation: return eval_binary_operation(astNode, env)
@@ -108,4 +113,5 @@ def evaluate(astNode: Statement, env: Environment) -> RunTime:
     elif astNode.type == NodeBooleanOperation: return eval_boolean_operation(astNode, env)
     elif astNode.type == NodeBlockStatement: return eval_block_statement(astNode, env)
     elif astNode.type == NodeLoopTantqueRepeter: return eval_loop_tantque_repeter(astNode, env)
+    elif astNode.type == NodeCallExpresstion: return eval_call_expression(astNode, env)
     else: Error("Unvalid returning value") 

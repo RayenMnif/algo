@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 from rich import print
-from runtime.environment import Environment
+from runtime.environment import setup_global_env
 from src.parser import *
 from src.lexer import * 
 from sys import argv, exit
@@ -9,10 +9,8 @@ from runtime.interpreter import *
 
 
 def main():
-    
-    env = Environment()
-    env.assignVar("vrai", BooleanVal(True))
-    env.assignVar("faux", BooleanVal(False))
+
+    env = setup_global_env()
 
     if len(argv) not in [2, 1]:
         print("Usage: algo [script]")
