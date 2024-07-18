@@ -22,6 +22,8 @@ TT_OpenParen = "OpenParen"
 TT_CloseParen = "CloseParen"
 TT_OpenBrace = "OpenBrace"
 TT_CloseBrace = "CLoseBrace"
+TT_Comma = "Comma"
+# --- keyword --- 
 TT_Debut = "Debut"
 TT_Fin = "Fin"
 # --- if Statement ----
@@ -117,8 +119,13 @@ class Lexer:
                 src.pop(0)
 
             elif src[0] == "]": 
-                tokens.append(Token(")", TT_CloseBrace))
+                tokens.append(Token("]", TT_CloseBrace))
                 src.pop(0)
+
+            elif src[0] == ",": 
+                tokens.append(Token(",", TT_Comma))
+                src.pop(0)
+
 
 
             elif  src[0] == "<": 

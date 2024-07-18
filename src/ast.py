@@ -1,7 +1,5 @@
 # Nodes 
-from typing import List
-
-
+NodeCallExpresstion = "CallExpresstion"
 NodeLoopTantqueRepeter = "LoopTantqueRepeter"
 NodeForLoop = "ForLoop"
 NodeBlockStatement = "BlockStatemnt"
@@ -121,11 +119,21 @@ class loopTantqueRepeter(Statement):
 
 
 class forLoop(Statement):
-    def __init__(self,i: List[Expression], stmnt: BlockStatemnt) -> None:
+    def __init__(self,i: list[Expression], stmnt: BlockStatemnt) -> None:
         super().__init__(NodeForLoop) 
         self.i = i
         self.stmnt = stmnt
     def __repr__(self) -> str:
         return f"{{for loop :\ni : {self.i}, Statement: {{{self.stmnt}}}}}"
+
+
+class CallExpresstion(Expression):
+    def __init__(self,callee: Expression, args: list[Expression]) -> None:
+        super().__init__(NodeCallExpresstion) 
+        self.callee = callee
+        self.args = args
+    def __repr__(self) -> str:
+        return f"{{CallExpresstion :\ncallee : {self.callee}, args: {self.args}}}"
+
 
 

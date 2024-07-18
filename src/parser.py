@@ -59,12 +59,32 @@ class Parser:
         return left 
 
     def parse_multiplicitive_expressions(self) -> Expression:
-        left = self.parse_primary_expressions()
+        left = self.parse_call_expression()
         while self.tokens[0].value in ["*", '/', "mod", "div"]:
             operator = self.advance().value
             right = self.parse_primary_expressions()
             left = BinaryOperation(left, right, operator)
         return left 
+
+    def parse_call_expression(self) -> Expression:
+        callee = self.parse_primary_expressions()
+        if self.tokens[0].type == TT_OpenParen and callee.type == NodeVar:
+            self.advance()
+            args = self.parse_args()
+            return CallExpresstion(callee, args)
+        return callee
+
+    def parse_args(self):
+        if self.tokens[0].type == TT_CloseParen:
+            self.advance()
+            return []
+        args = [self.parse_assignment_expressions()]
+        while self.tokens[0].type == TT_Comma and self.advance():
+            args.append(self.parse_assignment_expressions())
+        if self.tokens[0].type == TT_CloseParen:
+            self.advance()
+            return args
+        Error("missing closing parent")
 
     def parse_if_expression(self) -> Expression:
         cases = []
