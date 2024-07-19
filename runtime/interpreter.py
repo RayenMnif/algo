@@ -95,6 +95,26 @@ def eval_loop_tantque_repeter(loop: loopTantqueRepeter, env: Environment) -> Run
         while is_true(loop.condition, env):
             evaluate(loop.stmnt, env)
     return NullVal()
+
+def eval_for_loop(loop: forLoop, env: Environment) -> RunTime:
+    loop_env = Environment(env)
+    i = loop.interval[0].value
+    loop_env.assignVar(loop.var_name, NumberVal(i))
+    interval = [evaluate(num, env) for num in loop.interval]
+    print(f"interval: {interval}")
+    if interval[1].value < interval[0].value:
+        Error("Error in loop range : starting value is bigger than ending value")
+    if interval[2].value > interval[1].value:
+        Error("Error in loop range : pas value is bigger than ending value")
+    while i != int(interval[1].value):
+        evaluate(loop.stmnt, loop_env)
+        if len(interval) == 3:
+            i += int(interval[2].value)
+            loop_env.assignVar(loop.var_name, NumberVal(i))
+        else:
+            i += 1
+            loop_env.assignVar(loop.var_name, NumberVal(i))
+    return NullVal()
     
 def eval_call_expression(function: CallExpresstion, env: Environment) -> RunTime:
     caller : NativeFnVal = evaluate(function.callee, env) 
@@ -114,4 +134,5 @@ def evaluate(astNode: Statement, env: Environment) -> RunTime:
     elif astNode.type == NodeBlockStatement: return eval_block_statement(astNode, env)
     elif astNode.type == NodeLoopTantqueRepeter: return eval_loop_tantque_repeter(astNode, env)
     elif astNode.type == NodeCallExpresstion: return eval_call_expression(astNode, env)
+    elif astNode.type == NodeForLoop: return eval_for_loop(astNode, env)
     else: Error("Unvalid returning value") 

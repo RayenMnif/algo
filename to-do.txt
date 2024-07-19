@@ -1,4 +1,6 @@
-- function calls 
 - native function
+- strings 
+- complete for loops
+- function definition
 
 

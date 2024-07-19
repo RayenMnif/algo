@@ -35,8 +35,8 @@ def setup_global_env():
 
     # --- native functions ---
     # ecrire
-    env.assignVar("ecrire", NativeFnVal(lambda args: Error("ecrire takes one argumernt") if len(args) != 1 else print(args[0])))
-    env.assignVar("écrire", NativeFnVal(lambda args: Error("écrire takes one argumernt") if len(args) != 1 else print(args[0])))
+    env.assignVar("ecrire", NativeFnVal(lambda args: print() if len(args) == 0 else [print(arg) for arg in args]))
+    env.assignVar("écrire", NativeFnVal(lambda args: print() if len(args) == 0 else [print(arg) for arg in args]))
     # arrondi
     env.assignVar("arrondi", NativeFnVal(lambda args: Error("arrondi takes one argumernt") if len(args) != 1 else NumberVal(round(args[0].value)) if args[0].type == NumberValue else Error("arrondi takes a number as argument") ))
     # racine_carré

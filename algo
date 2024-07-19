@@ -23,7 +23,7 @@ def main():
                 program = Parser(src).produce_ast()
                 print(program)
                 print("-----------------------------")
-                print(evaluate(program, env))#.produce_ast()
+                evaluate(program, env)
         except FileNotFoundError: Error("FileNotFoundError: Canno't find the file you're looking for")
     else:
         print(""" 
@@ -54,7 +54,7 @@ def main():
                 # print(Parser(prompt).tokens)
                 print(program)
                 print("------------------------------------")
-                print(evaluate(program, env))
+                evaluate(program, env)
             except KeyboardInterrupt:
                 exit()
             except EOFError:
