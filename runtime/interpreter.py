@@ -98,10 +98,9 @@ def eval_loop_tantque_repeter(loop: loopTantqueRepeter, env: Environment) -> Run
 
 def eval_for_loop(loop: forLoop, env: Environment) -> RunTime:
     loop_env = Environment(env)
-    i = loop.interval[0].value
-    loop_env.assignVar(loop.var_name, NumberVal(i))
     interval = [evaluate(num, env) for num in loop.interval]
-    print(f"interval: {interval}")
+    i = interval[0].value
+    loop_env.assignVar(loop.var_name, NumberVal(i))
     if interval[1].value < interval[0].value:
         Error("Error in loop range : starting value is bigger than ending value")
     if interval[2].value > interval[1].value:
