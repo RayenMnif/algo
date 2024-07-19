@@ -1,6 +1,5 @@
-x <- 6
-pour i de 0 a x pas 2 faire
-    x <- x + 1
-    ecrire(x)
+x <- 1
+pour i de 0 a 8 pas 2 faire
+    x <- x + i
 fin_pour
 ecrire(x)

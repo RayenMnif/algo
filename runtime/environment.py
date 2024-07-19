@@ -14,13 +14,23 @@ class Environment:
         return env.variables[var_name]
 
     def assignVar(self, var_name: str, value: RunTime) -> RunTime:
-        self.variables[var_name] = value
+        env = self.get_scope(var_name)
+        if env:
+            env.variables[var_name] = value
+        else:
+            self.variables[var_name] = value
         return value
 
     def resolve (self, var_name: str):
         if var_name in self.variables.keys(): return self
         if self.parent == None: Error(f"Canno't resolve '{var_name}' as it does not exist")
         return self.parent.resolve(var_name)
+
+    def get_scope(self, var_name: str):
+        if var_name in self.variables.keys(): return self
+        if self.parent == None: return None
+        return self.parent.get_scope(var_name)
+
 
 
 def setup_global_env():

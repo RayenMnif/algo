@@ -1,6 +1,6 @@
+- fix the scope mechanism
 - native function
 - strings 
-- complete for loops
 - function definition
 
 
