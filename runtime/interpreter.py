@@ -103,9 +103,10 @@ def eval_for_loop(loop: forLoop, env: Environment) -> RunTime:
     loop_env.assignVar(loop.var_name, NumberVal(i))
     if interval[1].value < interval[0].value:
         Error("Error in loop range : starting value is bigger than ending value")
-    if interval[2].value > interval[1].value:
-        Error("Error in loop range : pas value is bigger than ending value")
-    while i != int(interval[1].value):
+    if len(interval) == 3:
+        if interval[2].value > interval[1].value:
+            Error("Error in loop range : pas value is bigger than ending value")
+    while i != int(interval[1].value + 1):
         evaluate(loop.stmnt, loop_env)
         if len(interval) == 3:
             i += int(interval[2].value)
