@@ -13,6 +13,8 @@ NodeAssignment = "Assignment"
 NodeNumericLiteral = "Nombre"
 NodeBooleanOperation = "BooleanOperation"
 NodeIndentifier= "Indentifier"
+NodeFunction = "Fonction"
+NodeProcedure = "Procedure"
 
 class Statement:
     def __init__(self, type: str) -> None:
@@ -98,14 +100,32 @@ class Null(Expression):
         return f"{{{NodeNull}: {{{self.name}}}}}"
 
 
-class CallExpresstion(Expression):
+class Function(Expression):
+    def __init__(self, callee: Expression, parameters: list[tuple[Indentifier, Indentifier]], statement: BlockStatemnt) -> None:
+        super().__init__(NodeFunction) 
+        self.callee = callee
+        self.parameters = parameters
+        self.statement = statement
+    def __repr__(self) -> str:
+        return f"{{fonction :\n callee : {self.callee}, parameters: {self.parameters}, statement: {self.statement}}}"
+
+
+class Procedure(Expression):
+    def __init__(self, callee: Expression,  parameters: list[tuple[Indentifier, Indentifier]], statement: BlockStatemnt) -> None:
+        super().__init__(NodeProcedure) 
+        self.callee = callee
+        self.parameters = parameters
+        self.statement = statement
+    def __repr__(self) -> str:
+        return f"{{Procedure :\n callee : {self.callee}, parameters: {self.parameters}, statement: {self.statement}}}"
+
+class UserDefinedFunction(Expression):
     def __init__(self, callee: Expression,  args: list[Expression]) -> None:
         super().__init__(NodeCallExpresstion) 
         self.callee = callee
         self.args = args 
     def __repr__(self) -> str:
         return f"{{function call :\n callee : {self.callee}, args: {{{self.args}}}}}"
-
 
 class ifStatement(Expression):
     def __init__(self, cases: list[Expression],  else_case: BlockStatemnt | None) -> None:

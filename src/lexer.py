@@ -23,6 +23,7 @@ TT_CloseParen = "CloseParen"
 TT_OpenBrace = "OpenBrace"
 TT_CloseBrace = "CLoseBrace"
 TT_Comma = "Comma"
+TT_Colon = "Colon"
 # --- keyword --- 
 TT_Debut = "Debut"
 TT_Fin = "Fin"
@@ -126,6 +127,10 @@ class Lexer:
                 tokens.append(Token(",", TT_Comma))
                 src.pop(0)
 
+
+            elif src[0] == ":": 
+                tokens.append(Token(":", TT_Colon))
+                src.pop(0)
 
 
             elif  src[0] == "<": 
