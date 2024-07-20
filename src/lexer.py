@@ -1,7 +1,7 @@
 from src.utils import Error
 
 
-# tokens 
+# tokens
 TT_EOF = "EOF"
 # --- var types ---
 TT_Number = "Number"
@@ -17,6 +17,7 @@ TT_Null = "nulle"
 # --- fonctions ---
 TT_Procedure = "procedure"
 TT_fonction = "fonction"
+TT_Retourner = "retourner"
 # --- symbols ---
 TT_OpenParen = "OpenParen"
 TT_CloseParen = "CloseParen"
@@ -24,7 +25,7 @@ TT_OpenBrace = "OpenBrace"
 TT_CloseBrace = "CLoseBrace"
 TT_Comma = "Comma"
 TT_Colon = "Colon"
-# --- keyword --- 
+# --- keyword ---
 TT_Debut = "Debut"
 TT_Fin = "Fin"
 # --- if Statement ----
@@ -45,13 +46,14 @@ TT_faire = "faire"
 TT_finpour = "fin_pour"
 
 
+
 KEYWORDS = {"div": TT_BinaryOperator,
             "mod": TT_BinaryOperator,
+            "Div": TT_BinaryOperator,
+            "Mod": TT_BinaryOperator,
             "nulle": TT_Null,
-            "procedure": TT_Procedure,
             "fonction": TT_fonction,
-            "debut": TT_Debut,
-            "fin": TT_Fin,
+            "procédure": TT_Procedure, "procedure": TT_Procedure,
             "ou": TT_BooleanOperator,
             "et": TT_BooleanOperator,
             "si": TT_if,
@@ -62,16 +64,14 @@ KEYWORDS = {"div": TT_BinaryOperator,
             "tant_que": TT_tantque,
             "faire": TT_faire,
             "fin_tant_que": TT_fintanque,
-            "jusqu'a": TT_jusqua,
-            "jusqua": TT_jusqua,
-            "repeter": TT_repeter,
-            "répéter": TT_repeter,
-            "debut": TT_Debut,
-            "début": TT_Debut,
-            "pour": TT_pour,
+            "jusqu'a": TT_jusqua, "jusqua": TT_jusqua,
+            "repeter": TT_repeter, "répéter": TT_repeter,
+            "debut": TT_Debut, "début": TT_Debut,
             "fin": TT_Fin,
+            "pour": TT_pour,
             "pas": TT_pas,
-            "fin_pour": TT_finpour}
+            "fin_pour": TT_finpour,
+            "retourner": TT_Retourner}
 
 class Token:
     def __init__(self, value, type: str) -> None:
@@ -106,39 +106,39 @@ class Lexer:
         src = list(self.src)
         while src:
 
-            if self.is_skippable(src[0]): src.pop(0) 
-            
-            elif src[0] == "(": 
+            if self.is_skippable(src[0]): src.pop(0)
+
+            elif src[0] == "(":
                 tokens.append(Token("(", TT_OpenParen))
                 src.pop(0)
 
-            elif src[0] == ")": 
+            elif src[0] == ")":
                 tokens.append(Token(")", TT_CloseParen))
                 src.pop(0)
 
-            elif src[0] == "[": 
+            elif src[0] == "[":
                 tokens.append(Token("(", TT_OpenBrace))
                 src.pop(0)
 
-            elif src[0] == "]": 
+            elif src[0] == "]":
                 tokens.append(Token("]", TT_CloseBrace))
                 src.pop(0)
 
-            elif src[0] == ",": 
+            elif src[0] == ",":
                 tokens.append(Token(",", TT_Comma))
                 src.pop(0)
 
 
-            elif src[0] == ":": 
+            elif src[0] == ":":
                 tokens.append(Token(":", TT_Colon))
                 src.pop(0)
 
 
-            elif  src[0] == "<": 
+            elif  src[0] == "<":
                 if src[1] not in "-=":
                     tokens.append(Token("<", TT_BooleanOperator))
                     src.pop(0)
-                elif src[1] == "=": 
+                elif src[1] == "=":
                     tokens.append(Token("<=", TT_BooleanOperator))
                     src.pop(0)
                     src.pop(0)
@@ -147,7 +147,7 @@ class Lexer:
                     src.pop(0)
                     src.pop(0)
 
-            elif src[0] in ["+", "-", "*", "/"]: 
+            elif src[0] in ["+", "-", "*", "/"]:
                 tokens.append(Token(src[0], TT_BinaryOperator))
                 src.pop(0)
 
@@ -173,11 +173,11 @@ class Lexer:
                     src.pop(0)
                 tokens.append(Token(number, TT_Number))
 
-            elif src[0] == "=": 
+            elif src[0] == "=":
                 tokens.append(Token("=", TT_BooleanOperator))
                 src.pop(0)
 
-            elif len(src) > 2 and src[0]+src[1] == "!=": 
+            elif len(src) > 2 and src[0]+src[1] == "!=":
                 tokens.append(Token("!=", TT_BooleanOperator))
                 src.pop(0)
                 src.pop(0)
@@ -200,6 +200,3 @@ class Lexer:
 
         tokens.append(Token("EOF", TT_EOF))
         return tokens
-
-
-

@@ -1,8 +1,4 @@
-i <- 1
-
-repeter
-    i <- i + 1
-    ecrire(i)
-jusqu'a i > 5
-
-ecrire(i)
+fonction bonjour(nom: chaine) : chaine
+debut
+    ecrire("bonjour", nom)
+fin

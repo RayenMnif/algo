@@ -39,7 +39,7 @@ def eval_boolean_operation(bo: BooleanOperation, env: Environment) -> RunTime:
         elif op == "!=": result = left != right
         else: Error("You can only compare Numeric values")
     return BooleanVal(result)
-        
+
 
 def eval_binary_operation(binop: BinaryOperation, env: Environment) -> RunTime:
     left = evaluate(binop.LeftOp, env)
@@ -59,8 +59,8 @@ def eval_numeric_binary_expression(LeftOp: NumberVal, RightOp: NumberVal, op) ->
         if right == 0:
             Error("ZeroDivisionError: division by zero")
         result = left / right
-    elif op == "mod": result = left % right
-    elif op == "div":
+    elif op in ["mod", "Mod"]: result = left % right
+    elif op in ["Div", "div"]:
         if right == 0:
             Error("ZeroDivisionError: division by zero")
         result = left // right
@@ -116,9 +116,9 @@ def eval_for_loop(loop: forLoop, env: Environment) -> RunTime:
             i += 1
             loop_env.assignVar(loop.var_name, NumberVal(i))
     return NullVal()
-    
+
 def eval_call_expression(function: CallExpresstion, env: Environment) -> RunTime:
-    caller : NativeFnVal = evaluate(function.callee, env) 
+    caller : NativeFnVal = evaluate(function.callee, env)
     if caller.type != NativeFnvalue : Error("You can only call functions")
     result = caller.call([evaluate(arg, env) for arg in function.args])
     return result
@@ -137,4 +137,4 @@ def evaluate(astNode: Statement, env: Environment) -> RunTime:
     elif astNode.type == NodeLoopTantqueRepeter: return eval_loop_tantque_repeter(astNode, env)
     elif astNode.type == NodeCallExpresstion: return eval_call_expression(astNode, env)
     elif astNode.type == NodeForLoop: return eval_for_loop(astNode, env)
-    else: Error("Unvalid returning value") 
+    else: Error("Unvalid returning value")

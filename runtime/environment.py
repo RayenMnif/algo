@@ -37,7 +37,7 @@ def setup_global_env():
     env = Environment()
 
     # --- global values ---
-    # Boolean values 
+    # Boolean values
     env.assignVar("vrai", BooleanVal(True))
     env.assignVar("faux", BooleanVal(False))
     # global var
@@ -45,38 +45,36 @@ def setup_global_env():
 
     # --- native functions ---
     # ecrire
-    env.assignVar("ecrire", NativeFnVal(lambda args: print() if len(args) == 0 else [print(arg) for arg in args]))
+    env.assignVar("ecrire", NativeFnVal(lambda args: print() if len(args) == 0 else [ print(arg, end="") if (i != len(args) - 1) else print(arg) for i, arg in enumerate(args) ]))
     env.assignVar("écrire", NativeFnVal(lambda args: print() if len(args) == 0 else [print(arg) for arg in args]))
     # arrondi
     env.assignVar("arrondi", NativeFnVal(lambda args: Error("arrondi takes one argumernt") if len(args) != 1 else NumberVal(round(args[0].value)) if args[0].type == NumberValue else Error("arrondi takes a number as argument") ))
     # racine_carré
     env.assignVar("racine_carre", NativeFnVal(lambda args: Error("racine_carre takes one argumernt") if len(args) != 1 else NumberVal(sqrt(args[0].value)) if args[0].type == NumberValue else Error("racine_carre takes a number as argument") ))
     env.assignVar("racine_carré", NativeFnVal(lambda args: Error("racine_carré takes one argumernt") if len(args) != 1 else NumberVal(sqrt(args[0].value)) if args[0].type == NumberValue else Error("racine_carre takes a number as argument") ))
-    # ent 
+    # ent
     env.assignVar("ent", NativeFnVal(lambda args: Error("ent takes one argumernt") if len(args) != 1 else NumberVal(int(args[0].value)) if args[0].type == NumberValue else Error("ent takes a number as argument") ))
     # abs
     env.assignVar("abs", NativeFnVal(lambda args: Error("abs takes one argumernt") if len(args) != 1 else NumberVal(abs(args[0].value)) if args[0].type == NumberValue else Error("abs takes a number as argument") ))
-    # alea 
+    # alea
     env.assignVar("alea", NativeFnVal(lambda args: Error("alea takes one argumernt") if len(args) != 2 else NumberVal(float(randint(int(args[0].value), int(args[1].value))) if args[0].type == NumberValue and args[0].type == NumberValue and args[0].value < args[1].value else Error("alea takes two number as argument") )))
 
     # estnum
-    # not implimented yet 
-    
-    # long
-    # not implimented yet 
+    # not implimented yet
 
     # long
-    # not implimented yet 
+    # not implimented yet
+
+    # long
+    # not implimented yet
 
     # sous_chaine(ch, d, f)
-    # not implimented yet 
+    # not implimented yet
 
     # majus
-    # not implimented yet 
+    # not implimented yet
 
     # effacer
-    # not implimented yet 
+    # not implimented yet
 
     return env
-
- 

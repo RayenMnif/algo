@@ -101,13 +101,14 @@ class Null(Expression):
 
 
 class Function(Expression):
-    def __init__(self, callee: Expression, parameters: list[tuple[Indentifier, Indentifier]], statement: BlockStatemnt) -> None:
+    def __init__(self, callee: Expression, parameters: list[tuple[Indentifier, str]], return_type: str, statement: BlockStatemnt) -> None:
         super().__init__(NodeFunction) 
         self.callee = callee
         self.parameters = parameters
+        self.return_type = return_type
         self.statement = statement
     def __repr__(self) -> str:
-        return f"{{fonction :\n callee : {self.callee}, parameters: {self.parameters}, statement: {self.statement}}}"
+        return f"{{fonction :\n callee : {self.callee}, parameters: {self.parameters}, statement: {self.statement}, return_type: {self.return_type}}}"
 
 
 class Procedure(Expression):

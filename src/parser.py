@@ -1,7 +1,6 @@
-from typing import List
 from src.lexer import *
 from src.ast import *
-from src.utils import Error
+from src.utils import *
 
 
 class Parser:
@@ -22,7 +21,7 @@ class Parser:
     def parse_statement(self) -> Statement:
         return self.parse_expression()
 
-    def parse_block_statement(self, end_parsing_array: List[str]) -> BlockStatemnt:
+    def parse_block_statement(self, end_parsing_array: list[str]) -> BlockStatemnt:
         blockStatemnt = BlockStatemnt([])
         while self.tokens[0].type not in end_parsing_array:
             if self.tokens[0].type == TT_EOF: Error("you forgot to close the statement")
@@ -56,15 +55,15 @@ class Parser:
             operator = self.advance().value
             right = self.parse_multiplicitive_expressions()
             left = BinaryOperation(left, right, operator)
-        return left 
+        return left
 
     def parse_multiplicitive_expressions(self) -> Expression:
         left = self.parse_call_expression()
-        while self.tokens[0].value in ["*", '/', "mod", "div"]:
+        while self.tokens[0].value in BinaryOperator:
             operator = self.advance().value
             right = self.parse_primary_expressions()
             left = BinaryOperation(left, right, operator)
-        return left 
+        return left
 
     def parse_call_expression(self) -> Expression:
         callee = self.parse_primary_expressions()
@@ -81,10 +80,11 @@ class Parser:
         args = [self.parse_assignment_expressions()]
         while self.tokens[0].type == TT_Comma and self.advance():
             args.append(self.parse_assignment_expressions())
+            if len(args) > 100: Error("Function Call is taking more than 100 argument")
         if self.tokens[0].type == TT_CloseParen:
             self.advance()
             return args
-        Error("missing closing parent")
+        Error("missing closing parenthesis '('")
 
     def parse_if_expression(self) -> Expression:
         cases = []
@@ -140,11 +140,11 @@ class Parser:
         if i.type != TT_Indentifier:
             Error("ForLoopError: unvalid for loops structure\npour <var> de <number> a <number> (pas <number>)? faire\n\t<statement>\nfin_pour")
         de = self.advance()
-        if de.type != TT_Indentifier and de.value != "de": 
+        if de.type != TT_Indentifier and de.value != "de":
             Error("ForLoopError: unvalid for loops structure\npour <var> de <number> a <number> (pas <number>)? faire\n\t<statement>\nfin_pour")
         num1 = self.parse_additive_expressions()
         a = self.advance()
-        if a.type != TT_Indentifier and a.value != "a": 
+        if a.type != TT_Indentifier and a.value != "a":
             Error("ForLoopError: unvalid for loops structure\npour <var> de <number> a <number> (pas <number>)? faire\n\t<statement>\nfin_pour")
         num2 = self.parse_additive_expressions()
         if self.tokens[0].type != TT_pas:
@@ -164,6 +164,44 @@ class Parser:
             self.advance()
             return forLoop(i.value, [num1, num2, pas], statement)
 
+    def parse_fonction(self) -> Expression:
+        self.advance()
+        callee = self.parse_primary_expressions()
+        if callee.type != NodeIndentifier: Error(f"Unvalid function name '{callee}'")
+        if self.advance().type != TT_OpenParen: Error("Expected open parenthesis '('")
+        parameters = self.parse_parameters_list()
+        if self.advance().type != TT_Colon: Error("Expected a Colon ':'")
+        return_type = self.parse_primary_expressions()
+        self.check_argType(return_type)
+        if self.advance().type != TT_Debut: Error("Expected 'Debut'")
+        statement = self.parse_block_statement([TT_Fin])
+        self.advance()
+        return Function(callee, parameters, return_type, statement)
+
+    def parse_parameters_list(self) -> list[tuple[Expression, str]]:
+        if self.tokens[0].type == TT_CloseParen:
+            self.advance()
+            return []
+        parameters = [self.parse_parameter()]
+        while self.tokens[0].type == TT_Comma and self.advance():
+            parameters.append(self.parse_parameter())
+        if self.advance().type != TT_CloseParen: Error("Expected closing parenthesis '('")
+        return parameters
+
+    def parse_parameter(self) -> tuple[Expression, str]:
+        param = self.parse_primary_expressions()
+        if param.type != NodeIndentifier: Error(f"Unvalid paramaeter '{param}'")
+        if self.advance().type != TT_Colon: Error("Expected a Colon ':'")
+        argType = self.parse_primary_expressions()
+
+        return (param, argType.name)
+
+    def check_argType(self, argType: Expression) -> None:
+        if argType.type != NodeIndentifier:
+            if argType.name not in VarTypes :
+                Error(f"Unvalid argument type '{argType.name}'")
+            Error(f"Unvalid argument type '{argType}'")
+
     def parse_primary_expressions(self) -> Expression:
         token_type = self.tokens[0].type
         if token_type == TT_Number: return NumericLiteral(float(self.advance().value))
@@ -173,7 +211,7 @@ class Parser:
             self.advance()
             value = self.parse_expression()
             tt = self.advance()
-            if tt.type != TT_CloseParen: Error("missing closing parent")
+            if tt.type != TT_CloseParen: Error("missing closing parenthesis ')'")
             return value
         elif token_type == TT_if:
             return self.parse_if_expression()
@@ -182,9 +220,7 @@ class Parser:
         elif token_type == TT_tantque: return self.parse_tantque_loop()
         elif token_type == TT_repeter: return self.parse_repeter_loop()
         elif token_type == TT_pour: return self.parse_for_loop()
+        elif token_type == TT_fonction: return self.parse_fonction()
         else:
             Error(f"Parser Error: Unvalid Statement {self.advance()}")
             return Expression("")
-
-
-
