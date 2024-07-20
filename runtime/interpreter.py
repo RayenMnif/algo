@@ -87,13 +87,14 @@ def eval_block_statement(block: BlockStatemnt, env: Environment) -> RunTime:
     return last_evaluated
 
 def eval_loop_tantque_repeter(loop: loopTantqueRepeter, env: Environment) -> RunTime:
+    loop_env = Environment(env)
     if not loop.tant_que:
-        evaluate(loop.stmnt, env)
-        while not is_true(loop.condition, env):
-            evaluate(loop.stmnt, env)
+        evaluate(loop.stmnt, loop_env)
+        while not is_true(loop.condition, loop_env):
+            evaluate(loop.stmnt, loop_env)
     else:
-        while is_true(loop.condition, env):
-            evaluate(loop.stmnt, env)
+        while is_true(loop.condition, loop_env):
+            evaluate(loop.stmnt, loop_env)
     return NullVal()
 
 def eval_for_loop(loop: forLoop, env: Environment) -> RunTime:

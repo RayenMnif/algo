@@ -1,3 +1,8 @@
-pour i de 0 a 8 faire
+i <- 1
+
+repeter
+    i <- i + 1
     ecrire(i)
-fin_pour
+jusqu'a i > 5
+
+ecrire(i)

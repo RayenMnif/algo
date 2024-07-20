@@ -1,4 +1,5 @@
-- native function
-- function definition
+- complete all native function
+- function definition (procedure/fonction)
+- data structure: Matrice / Tableau
 
 
