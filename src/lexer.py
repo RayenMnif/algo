@@ -7,7 +7,7 @@ TT_EOF = "EOF"
 TT_Number = "Number"
 TT_String = "String"
 # --- var related ---
-TT_Var = "Var"
+TT_Indentifier = "Indentifier"
 TT_Asignment = "Asignment"
 # --- operations ---
 TT_BinaryOperator = "BinaryOperator"
@@ -187,7 +187,7 @@ class Lexer:
                 while src and (src[0].isalpha() or src[0] in "_'"):
                     keyword += src[0]
                     src.pop(0)
-                tokens.append(Token(keyword, TT_Var) if keyword not in KEYWORDS.keys() else Token(keyword, KEYWORDS[keyword]))
+                tokens.append(Token(keyword, TT_Indentifier) if keyword not in KEYWORDS.keys() else Token(keyword, KEYWORDS[keyword]))
 
             else:
                 Error(f"Syntax Error: unkown symbol {src[0]}", self.PosLine)

@@ -1,5 +1,6 @@
+StringValue = "ChaineDeCaracter"
 AssignmentValue = "Assignment"
-NumberValue = "number"
+NumberValue = "Nombre"
 NullValue = "nulle"
 BooleanValue = "booleen"
 NativeFnvalue = "NativeFunction"
@@ -35,4 +36,12 @@ class NativeFnVal(RunTime):
         super().__init__(NativeFnvalue)
         self.call = call
     def __repr__(self) -> str:
-        return f"{{{NativeFnValue}: {self.call}}}"
+        return f"{{{NativeFnvalue}: {self.call}}}"
+
+
+class StringVal(RunTime):
+    def __init__(self, value: str) -> None:
+        super().__init__(StringValue)
+        self.value = value
+    def __repr__(self) -> str:
+        return f"{{value : {self.value}, type: {StringValue}}}"

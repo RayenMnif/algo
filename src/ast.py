@@ -1,7 +1,8 @@
 # Nodes 
+NodeString = "ChaineDeCaractere"
 NodeCallExpresstion = "CallExpresstion"
-NodeLoopTantqueRepeter = "LoopTantqueRepeter"
-NodeForLoop = "ForLoop"
+NodeLoopTantqueRepeter = "Boucle"
+NodeForLoop = "BouclePour"
 NodeBlockStatement = "BlockStatemnt"
 NodeIfStatement = "IfStatment"
 NodeCallExpresstion = "CallExpresstion"
@@ -9,9 +10,9 @@ NodeNull = "Nulle"
 NodeProgram = "Program"
 NodeBinaryOperation = "BinaryOperation"
 NodeAssignment = "Assignment"
-NodeNumericLiteral = "NumericLiteral"
+NodeNumericLiteral = "Nombre"
 NodeBooleanOperation = "BooleanOperation"
-NodeVar= "Var"
+NodeIndentifier= "Indentifier"
 
 class Statement:
     def __init__(self, type: str) -> None:
@@ -65,12 +66,19 @@ class NumericLiteral(Expression):
         return f"{{{NodeNumericLiteral}: {{value: {self.value}}}}}"
 
 
-class Var(Expression):
+class String(Expression):
+    def __init__(self, value: str) -> None:
+        self.value = value
+        super().__init__(NodeString)
+    def __repr__(self) -> str:
+        return f"{{{NodeString}: {{value: {self.value}}}}}"
+
+class Indentifier(Expression):
     def __init__(self, name: str) -> None:
         self.name = name
-        super().__init__(NodeVar)
+        super().__init__(NodeIndentifier)
     def __repr__(self) -> str:
-        return f"{{{NodeVar}: {{name: {self.name}}}}}"
+        return f"{{{NodeIndentifier}: {{name: {self.name}}}}}"
 
 
 class Assignment(Expression):

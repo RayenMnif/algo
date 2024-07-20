@@ -73,11 +73,11 @@ def eval_program(program : Program, env: Environment) -> RunTime:
     return last_evaluated
 
 
-def eval_Var(var: Var, env: Environment) -> RunTime:
+def eval_Var(var: Indentifier, env: Environment) -> RunTime:
     return env.lookUpVar(var.name)
 
 def eval_assignment(assig: Assignment, env: Environment):
-    if assig.var.type != NodeVar: Error(f"Looks like you're wrongly assigning the variable")
+    if assig.var.type != NodeIndentifier: Error(f"Looks like you're wrongly assigning the variable")
     return env.assignVar(assig.var.name, evaluate(assig.value, env))
 
 def eval_block_statement(block: BlockStatemnt, env: Environment) -> RunTime:
@@ -125,9 +125,10 @@ def evaluate(astNode: Statement, env: Environment) -> RunTime:
     if astNode.type == NodeBinaryOperation: return eval_binary_operation(astNode, env)
     elif astNode.type == NodeAssignment: return eval_assignment(astNode, env)
     elif astNode.type == NodeNumericLiteral: return NumberVal(astNode.value)
+    elif astNode.type == NodeString: return StringVal(astNode.value)
     elif astNode.type == NodeProgram: return eval_program(astNode, env)
     elif astNode.type == NodeNull: return NullVal()
-    elif astNode.type == NodeVar: return eval_Var(astNode, env)
+    elif astNode.type == NodeIndentifier: return eval_Var(astNode, env)
     elif astNode.type == NodeIfStatement: return eval_if_statement(astNode, env)
     elif astNode.type == NodeBooleanOperation: return eval_boolean_operation(astNode, env)
     elif astNode.type == NodeBlockStatement: return eval_block_statement(astNode, env)

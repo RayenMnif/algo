@@ -68,7 +68,7 @@ class Parser:
 
     def parse_call_expression(self) -> Expression:
         callee = self.parse_primary_expressions()
-        if self.tokens[0].type == TT_OpenParen and callee.type == NodeVar:
+        if self.tokens[0].type == TT_OpenParen and callee.type == NodeIndentifier:
             self.advance()
             args = self.parse_args()
             return CallExpresstion(callee, args)
@@ -137,14 +137,14 @@ class Parser:
     def parse_for_loop(self):
         self.advance()
         i = self.advance()
-        if i.type != TT_Var:
+        if i.type != TT_Indentifier:
             Error("ForLoopError: unvalid for loops structure\npour <var> de <number> a <number> (pas <number>)? faire\n\t<statement>\nfin_pour")
         de = self.advance()
-        if de.type != TT_Var and de.value != "de": 
+        if de.type != TT_Indentifier and de.value != "de": 
             Error("ForLoopError: unvalid for loops structure\npour <var> de <number> a <number> (pas <number>)? faire\n\t<statement>\nfin_pour")
         num1 = self.parse_additive_expressions()
         a = self.advance()
-        if a.type != TT_Var and a.value != "a": 
+        if a.type != TT_Indentifier and a.value != "a": 
             Error("ForLoopError: unvalid for loops structure\npour <var> de <number> a <number> (pas <number>)? faire\n\t<statement>\nfin_pour")
         num2 = self.parse_additive_expressions()
         if self.tokens[0].type != TT_pas:
@@ -167,7 +167,8 @@ class Parser:
     def parse_primary_expressions(self) -> Expression:
         token_type = self.tokens[0].type
         if token_type == TT_Number: return NumericLiteral(float(self.advance().value))
-        elif token_type == NodeVar: return Var(self.advance().value)
+        elif token_type == NodeIndentifier: return Indentifier(self.advance().value)
+        elif token_type == TT_String: return String(self.advance().value)
         elif token_type == TT_OpenParen:
             self.advance()
             value = self.parse_expression()

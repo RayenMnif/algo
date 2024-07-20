@@ -1,4 +1,3 @@
-- fix the scope mechanism
 - native function
 - strings 
 - function definition
