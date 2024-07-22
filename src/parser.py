@@ -185,6 +185,7 @@ class Parser:
         parameters = [self.parse_parameter()]
         while self.tokens[0].type == TT_Comma and self.advance():
             parameters.append(self.parse_parameter())
+            if len(parameters) > 100: Error("Function is taking more than 100 parameter")
         if self.advance().type != TT_CloseParen: Error("Expected closing parenthesis '('")
         return parameters
 
@@ -201,6 +202,11 @@ class Parser:
             if argType.name not in VarTypes :
                 Error(f"Unvalid argument type '{argType.name}'")
             Error(f"Unvalid argument type '{argType}'")
+
+    def parse_return_statement(self):
+        self.advance()
+        return ReturnStatement(self.parse_statement())
+
 
     def parse_primary_expressions(self) -> Expression:
         token_type = self.tokens[0].type
@@ -221,6 +227,7 @@ class Parser:
         elif token_type == TT_repeter: return self.parse_repeter_loop()
         elif token_type == TT_pour: return self.parse_for_loop()
         elif token_type == TT_fonction: return self.parse_fonction()
+        elif token_type == TT_Retourner: return self.parse_return_statement()
         else:
             Error(f"Parser Error: Unvalid Statement {self.advance()}")
             return Expression("")

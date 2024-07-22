@@ -1,4 +1,5 @@
-# Nodes 
+# Nodes
+NodeReturn = "Retourner"
 NodeString = "ChaineDeCaractere"
 NodeCallExpresstion = "CallExpresstion"
 NodeLoopTantqueRepeter = "Boucle"
@@ -20,6 +21,8 @@ class Statement:
     def __init__(self, type: str) -> None:
        self.type = type
 
+class Expression(Statement):
+    pass
 
 class Program(Statement):
     def __init__(self, body: list[Statement]) -> None:
@@ -35,9 +38,12 @@ class BlockStatemnt(Statement):
     def __repr__(self) -> str:
         return f'{{"BlockStatemnt": {{body: {self.body}}}}}'
 
-
-class Expression(Statement):
-    pass
+class ReturnStatement(Statement):
+    def __init__(self, value: Expression) -> None:
+        self.value = value
+        super().__init__(NodeReturn)
+    def __repr__(self) -> str:
+        return f'{{"{NodeReturn}": {{value: {self.value}}}}}'
 
 class BooleanOperation(Expression):
     def __init__(self, LeftOp: Expression, RightOp: Expression, Op: str) -> None:
@@ -85,16 +91,16 @@ class Indentifier(Expression):
 
 class Assignment(Expression):
     def __init__(self, var: Expression, value: Expression) -> None:
-        super().__init__(NodeAssignment) 
+        super().__init__(NodeAssignment)
         self.var = var
-        self.value = value 
+        self.value = value
     def __repr__(self) -> str:
         return f"{{var : {self.var}, value : {{{self.value}}}}}"
 
 
 class Null(Expression):
     def __init__(self, name: str) -> None:
-        super().__init__(NodeNull) 
+        super().__init__(NodeNull)
         self.name = name
     def __repr__(self) -> str:
         return f"{{{NodeNull}: {{{self.name}}}}}"
@@ -102,7 +108,7 @@ class Null(Expression):
 
 class Function(Expression):
     def __init__(self, callee: Expression, parameters: list[tuple[Indentifier, str]], return_type: str, statement: BlockStatemnt) -> None:
-        super().__init__(NodeFunction) 
+        super().__init__(NodeFunction)
         self.callee = callee
         self.parameters = parameters
         self.return_type = return_type
@@ -111,9 +117,9 @@ class Function(Expression):
         return f"{{fonction :\n callee : {self.callee}, parameters: {self.parameters}, statement: {self.statement}, return_type: {self.return_type}}}"
 
 
-class Procedure(Expression):
+class Procedure(Statement):
     def __init__(self, callee: Expression,  parameters: list[tuple[Indentifier, Indentifier]], statement: BlockStatemnt) -> None:
-        super().__init__(NodeProcedure) 
+        super().__init__(NodeProcedure)
         self.callee = callee
         self.parameters = parameters
         self.statement = statement
@@ -122,15 +128,15 @@ class Procedure(Expression):
 
 class UserDefinedFunction(Expression):
     def __init__(self, callee: Expression,  args: list[Expression]) -> None:
-        super().__init__(NodeCallExpresstion) 
+        super().__init__(NodeCallExpresstion)
         self.callee = callee
-        self.args = args 
+        self.args = args
     def __repr__(self) -> str:
         return f"{{function call :\n callee : {self.callee}, args: {{{self.args}}}}}"
 
 class ifStatement(Expression):
     def __init__(self, cases: list[Expression],  else_case: BlockStatemnt | None) -> None:
-        super().__init__(NodeIfStatement) 
+        super().__init__(NodeIfStatement)
         self.cases = cases
         self.else_case = else_case
     def __repr__(self) -> str:
@@ -139,7 +145,7 @@ class ifStatement(Expression):
 
 class loopTantqueRepeter(Statement):
     def __init__(self, condition: Expression, stmnt: BlockStatemnt, tant_que: bool) -> None:
-        super().__init__(NodeLoopTantqueRepeter) 
+        super().__init__(NodeLoopTantqueRepeter)
         self.condition = condition
         self.stmnt = stmnt
         self.tant_que = tant_que
@@ -149,7 +155,7 @@ class loopTantqueRepeter(Statement):
 
 class forLoop(Statement):
     def __init__(self,var_name: str, interval: list[Expression], stmnt: BlockStatemnt) -> None:
-        super().__init__(NodeForLoop) 
+        super().__init__(NodeForLoop)
         self.var_name = var_name
         self.interval = interval
         self.stmnt = stmnt
@@ -159,11 +165,8 @@ class forLoop(Statement):
 
 class CallExpresstion(Expression):
     def __init__(self,callee: Expression, args: list[Expression]) -> None:
-        super().__init__(NodeCallExpresstion) 
+        super().__init__(NodeCallExpresstion)
         self.callee = callee
         self.args = args
     def __repr__(self) -> str:
         return f"{{CallExpresstion :\ncallee : {self.callee}, args: {self.args}}}"
-
-
-

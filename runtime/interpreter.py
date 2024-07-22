@@ -46,7 +46,26 @@ def eval_binary_operation(binop: BinaryOperation, env: Environment) -> RunTime:
     right = evaluate(binop.RightOp, env)
     if left.type == NumberValue and right.type == NumberValue:
         return eval_numeric_binary_expression(left, right, binop.op)
+    if left.type == StringValue and right.type == StringValue:
+        return eval_string_binary_expression(left, right, binop.op)
     return NullVal()
+
+
+def eval_string_binary_expression(LeftOp: StringVal, RightOp: StringVal, op) -> StringVal:
+    left = LeftOp.value
+    right = RightOp.value
+    if op == "+": result = left + right
+    elif op == "-": 
+        Error("Unvalid operation for strings")
+    elif op == "*": 
+        Error("Unvalid operation for strings")
+    elif op == "/":
+        Error("Unvalid operation for strings")
+    elif op in ["mod", "Mod"]: 
+        Error("Unvalid operation for strings")
+    elif op in ["Div", "div"]:
+        Error("Unvalid operation for strings")
+    return StringVal(result)
 
 
 def eval_numeric_binary_expression(LeftOp: NumberVal, RightOp: NumberVal, op) -> NumberVal:
