@@ -102,6 +102,8 @@ def eval_assignment(assig: Assignment, env: Environment):
 def eval_block_statement(block: BlockStatemnt, env: Environment) -> RunTime:
     last_evaluated = NullVal()
     for statement in block.body:
+        if statement.type == NodeReturn:
+            return evaluate(statement.value, env)
         last_evaluated = evaluate(statement, env)
     return last_evaluated
 

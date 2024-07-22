@@ -1,4 +1,3 @@
-ReturnValue = "Retourner"
 StringValue = "ChaineDeCaracter"
 AssignmentValue = "Assignment"
 NumberValue = "Nombre"
@@ -23,15 +22,6 @@ class NullVal(RunTime):
         super().__init__(NullValue)
     def __repr__(self) -> str:
         return f"{self.value}"
-
-
-class ReturnVal(RunTime):
-    def __init__(self, value: RunTime) -> None:
-        super().__init__(ReturnValue)
-        self.value = value
-    def __repr__(self) -> str:
-        return f"{self.value}"
-
 
 class BooleanVal(RunTime):
     def __init__(self, value: bool) -> None:
