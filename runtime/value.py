@@ -1,9 +1,12 @@
+from src.ast import BlockStatemnt
+
 StringValue = "ChaineDeCaracter"
 AssignmentValue = "Assignment"
 NumberValue = "Nombre"
 NullValue = "nulle"
 BooleanValue = "booleen"
 NativeFnvalue = "NativeFunction"
+FunctionValue = "Fonction"
 
 class RunTime:
     def __init__(self, type: str) -> None:
@@ -35,7 +38,18 @@ class NativeFnVal(RunTime):
         super().__init__(NativeFnvalue)
         self.call = call
     def __repr__(self) -> str:
-        return f"{self.value}"
+        return f"{self.call}"
+
+class FunctionVal(RunTime):
+    def __init__(self, name: str, param : list[str], body: BlockStatemnt, return_type: str, env) -> None:
+        super().__init__(FunctionValue)
+        self.name = name
+        self.param = param
+        self.return_type = return_type
+        self.env = env
+        self.body = body
+    def __repr__(self) -> str:
+        return f"{self.name}"
 
 
 class StringVal(RunTime):

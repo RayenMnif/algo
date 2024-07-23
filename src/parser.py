@@ -176,9 +176,9 @@ class Parser:
         if self.advance().type != TT_Debut: Error("Expected 'Debut'")
         statement = self.parse_block_statement([TT_Fin])
         self.advance()
-        return Function(callee, parameters, return_type, statement)
+        return Function(callee, parameters, return_type.name, statement)
 
-    def parse_parameters_list(self) -> list[tuple[Expression, str]]:
+    def parse_parameters_list(self) -> list[tuple[str, str]]:
         if self.tokens[0].type == TT_CloseParen:
             self.advance()
             return []
@@ -189,17 +189,17 @@ class Parser:
         if self.advance().type != TT_CloseParen: Error("Expected closing parenthesis '('")
         return parameters
 
-    def parse_parameter(self) -> tuple[Expression, str]:
+    def parse_parameter(self) -> tuple[str, str]:
         param = self.parse_primary_expressions()
         if param.type != NodeIndentifier: Error(f"Unvalid paramaeter '{param}'")
         if self.advance().type != TT_Colon: Error("Expected a Colon ':'")
         argType = self.parse_primary_expressions()
 
-        return (param, argType.name)
+        return (param.name, argType.name)
 
     def check_argType(self, argType: Expression) -> None:
         if argType.type != NodeIndentifier:
-            if argType.name not in VarTypes :
+            if argType.name not in VarValues.keys() :
                 Error(f"Unvalid argument type '{argType.name}'")
             Error(f"Unvalid argument type '{argType}'")
 

@@ -1,4 +1,8 @@
 fonction bonjour(nom: chaine) : chaine
 debut
-    ecrire("bonjour", nom)
+    x <- "bonjour " + nom
+    retourner x
 fin
+
+
+ecrire(bonjour("rayen"))
