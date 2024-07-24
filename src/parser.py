@@ -178,6 +178,19 @@ class Parser:
         self.advance()
         return Function(callee, parameters, return_type.name, statement)
 
+
+    def parse_procedure(self) -> Expression:
+        self.advance()
+        callee = self.parse_primary_expressions()
+        if callee.type != NodeIndentifier: Error(f"Unvalid function name '{callee}'")
+        if self.advance().type != TT_OpenParen: Error("Expected open parenthesis '('")
+        parameters = self.parse_parameters_list()
+        if self.advance().type != TT_Debut: Error("Expected 'Debut'")
+        statement = self.parse_block_statement([TT_Fin])
+        self.advance()
+        return Procedure(callee, parameters, statement)
+
+
     def parse_parameters_list(self) -> list[tuple[str, str]]:
         if self.tokens[0].type == TT_CloseParen:
             self.advance()
@@ -210,7 +223,8 @@ class Parser:
 
     def parse_primary_expressions(self) -> Expression:
         token_type = self.tokens[0].type
-        if token_type == TT_Number: return NumericLiteral(float(self.advance().value))
+        if token_type == TT_Reel: return Reel(float(self.advance().value))
+        if token_type == TT_Entier: return Entier(int(self.advance().value))
         elif token_type == NodeIndentifier: return Indentifier(self.advance().value)
         elif token_type == TT_String: return String(self.advance().value)
         elif token_type == TT_OpenParen:
@@ -227,6 +241,7 @@ class Parser:
         elif token_type == TT_repeter: return self.parse_repeter_loop()
         elif token_type == TT_pour: return self.parse_for_loop()
         elif token_type == TT_fonction: return self.parse_fonction()
+        elif token_type == TT_Procedure: return self.parse_procedure()
         elif token_type == TT_Retourner: return self.parse_return_statement()
         else:
             Error(f"Parser Error: Unvalid Statement {self.advance()}")

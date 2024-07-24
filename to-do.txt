@@ -1,5 +1,4 @@
 - complete all native function
-- function definition (procedure/fonction)
 - separting integers (entiers) and floats (reels)
 - data structure: Matrice / Tableau
 - errors in french (probably the hardest part LOL)

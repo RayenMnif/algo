@@ -51,7 +51,6 @@ def main():
                 if prompt.upper() == "CREDITS": print("project by Rayen Mnif")
                 if prompt.upper() == "HELP": print("the docs are not available at the moment")
                 program = Parser(prompt).produce_ast()
-                # print(Parser(prompt).tokens)
                 print(program)
                 print("------------------------------------")
                 evaluate(program, env)

@@ -141,25 +141,29 @@ def eval_for_loop(loop: forLoop, env: Environment) -> RunTime:
 def eval_call_expression(function: CallExpresstion, env: Environment) -> RunTime:
     args = [evaluate(arg, env) for arg in function.args]
     caller : NativeFnVal = evaluate(function.callee, env)
-    if caller.type not in [NativeFnvalue, FunctionValue] : Error("You can only call functions")
+    if caller.type not in [NativeFnvalue, FunctionValue, ProcedureValue] : Error("You can only call functions")
     if caller.type == NativeFnvalue:
         result = caller.call(args)
-    elif caller.type == FunctionValue:
+    elif caller.type in [FunctionValue, ProcedureValue]:
         if len(caller.param) != len(args):
             Error(f"FunctionError: number of args not matching in function '{caller.name}' ")
         func_env = Environment(env)
         for i in range(len(args)):
             func_env.assignVar(caller.param[i][0], args[i])
         check_parameters(caller.param, func_env)
-        func_return = evaluate(caller.body , func_env)
-        if func_return.type != VarValues[caller.return_type]:
-            Error(f"returning value in function '{caller.name}' not matching")
-        return func_return
+        if caller.type == FunctionValue:
+            func_return = evaluate(caller.body , func_env)
+            if func_return.type != VarValues[caller.return_type]:
+                Error(f"returning value in function '{caller.name}' not matching")
+            return func_return
+        return NullVal()
     return result
 
 def eval_fonction(function: Function, env: Environment) -> RunTime:
     return env.assignVar(function.callee.name, FunctionVal(function.callee.name, function.parameters, function.statement, function.return_type, env))
     
+def eval_procedure(function: Function, env: Environment) -> RunTime:
+    return env.assignVar(function.callee.name, ProcedureVal(function.callee.name, function.parameters, function.statement, env))
 
 def check_parameters(parameters, env):
     for param, paramType in parameters:
@@ -170,7 +174,7 @@ def check_parameters(parameters, env):
 def evaluate(astNode: Statement, env: Environment) -> RunTime:
     if astNode.type == NodeBinaryOperation: return eval_binary_operation(astNode, env)
     elif astNode.type == NodeAssignment: return eval_assignment(astNode, env)
-    elif astNode.type == NodeNumericLiteral: return NumberVal(astNode.value)
+    elif astNode.type in [NodeReel, NodeEntier]: return NumberVal(astNode.value)
     elif astNode.type == NodeString: return StringVal(astNode.value)
     elif astNode.type == NodeProgram: return eval_program(astNode, env)
     elif astNode.type == NodeNull: return NullVal()
@@ -182,4 +186,5 @@ def evaluate(astNode: Statement, env: Environment) -> RunTime:
     elif astNode.type == NodeCallExpresstion: return eval_call_expression(astNode, env)
     elif astNode.type == NodeForLoop: return eval_for_loop(astNode, env)
     elif astNode.type == NodeFunction: return eval_fonction(astNode, env)
+    elif astNode.type == NodeProcedure: return eval_procedure(astNode, env)
     else: Error(f"Unvalid returning value (ast node : {astNode})")

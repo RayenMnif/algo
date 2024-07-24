@@ -4,7 +4,8 @@ from src.utils import Error
 # tokens
 TT_EOF = "EOF"
 # --- var types ---
-TT_Number = "Number"
+TT_Entier = "Entier"
+TT_Reel = "Réel"
 TT_String = "String"
 # --- var related ---
 TT_Indentifier = "Indentifier"
@@ -171,7 +172,7 @@ class Lexer:
                             is_float = True
                     number += src[0]
                     src.pop(0)
-                tokens.append(Token(number, TT_Number))
+                tokens.append(Token(number, TT_Reel)) if is_float else tokens.append(Token(number, TT_Entier))
 
             elif src[0] == "=":
                 tokens.append(Token("=", TT_BooleanOperator))

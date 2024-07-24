@@ -11,7 +11,8 @@ NodeNull = "Nulle"
 NodeProgram = "Program"
 NodeBinaryOperation = "BinaryOperation"
 NodeAssignment = "Assignment"
-NodeNumericLiteral = "Nombre"
+NodeReel = "Réel"
+NodeEntier = "Entier"
 NodeBooleanOperation = "BooleanOperation"
 NodeIndentifier= "Indentifier"
 NodeFunction = "Fonction"
@@ -66,12 +67,20 @@ class BinaryOperation(Expression):
         return f"\n{{{NodeBinaryOperation}:\n\tLeftOp: {self.LeftOp},\n\top: {self.op},\n\tRightOp: {self.RightOp}\n}}\n"
 
 
-class NumericLiteral(Expression):
+class Reel(Expression):
     def __init__(self, value: float) -> None:
         self.value = value
-        super().__init__(NodeNumericLiteral)
+        super().__init__(NodeReel)
     def __repr__(self) -> str:
-        return f"{{{NodeNumericLiteral}: {{value: {self.value}}}}}"
+        return f"{{{NodeReel}: {{value: {self.value}}}}}"
+
+class Entier(Expression):
+    def __init__(self, value: int) -> None:
+        self.value = value
+        super().__init__(NodeEntier)
+    def __repr__(self) -> str:
+        return f"{{{NodeEntier}: {{value: {self.value}}}}}"
+
 
 
 class String(Expression):

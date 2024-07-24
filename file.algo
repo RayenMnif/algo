@@ -1,8 +1,9 @@
-fonction bonjour(nom: chaine) : chaine
+procedure bonjour(nom: chaine) 
 debut
     x <- "bonjour " + nom
     retourner x
 fin
 
 
-ecrire(bonjour("rayen"))
+x <- (bonjour("rayen"))
+ecrire(x)
