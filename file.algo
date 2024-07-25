@@ -1,4 +1,4 @@
-procedure bonjour(nom: chaine) 
+fonction bonjour(nom: chaine) : chaine
 debut
     x <- "bonjour " + nom
     retourner x

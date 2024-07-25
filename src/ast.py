@@ -1,4 +1,5 @@
 # Nodes
+NodeDSCall = "DataStructureCall"
 NodeReturn = "Retourner"
 NodeString = "ChaineDeCaractere"
 NodeCallExpresstion = "CallExpresstion"
@@ -14,13 +15,15 @@ NodeAssignment = "Assignment"
 NodeReel = "Réel"
 NodeEntier = "Entier"
 NodeBooleanOperation = "BooleanOperation"
-NodeIndentifier= "Indentifier"
+NodeIndentifier = "Indentifier"
 NodeFunction = "Fonction"
 NodeProcedure = "Procedure"
+
 
 class Statement:
     def __init__(self, type: str) -> None:
        self.type = type
+
 
 class Expression(Statement):
     pass
@@ -135,13 +138,6 @@ class Procedure(Statement):
     def __repr__(self) -> str:
         return f"{{Procedure :\n callee : {self.callee}, parameters: {self.parameters}, statement: {self.statement}}}"
 
-class UserDefinedFunction(Expression):
-    def __init__(self, callee: Expression,  args: list[Expression]) -> None:
-        super().__init__(NodeCallExpresstion)
-        self.callee = callee
-        self.args = args
-    def __repr__(self) -> str:
-        return f"{{function call :\n callee : {self.callee}, args: {{{self.args}}}}}"
 
 class ifStatement(Expression):
     def __init__(self, cases: list[Expression],  else_case: BlockStatemnt | None) -> None:
@@ -179,3 +175,12 @@ class CallExpresstion(Expression):
         self.args = args
     def __repr__(self) -> str:
         return f"{{CallExpresstion :\ncallee : {self.callee}, args: {self.args}}}"
+
+
+class DsCall(Expression):
+    def __init__(self,callee: Expression, args: list[Expression]) -> None:
+        super().__init__(NodeDSCall)
+        self.callee = callee
+        self.args = args
+    def __repr__(self) -> str:
+        return f"{{DsCall :\ncallee : {self.callee}, args: {self.args}}}"

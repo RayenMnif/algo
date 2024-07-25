@@ -65,15 +65,40 @@ class Parser:
             left = BinaryOperation(left, right, operator)
         return left
 
-    def parse_call_expression(self) -> Expression:
+    def parse_data_structures_call(self) -> Expression:
+        """ for parsing Tableau/Matrice calls 
+            example: 
+                for matrice: M[1,0]
+                for Tableau: M[0]
+        """
         callee = self.parse_primary_expressions()
+        if self.tokens[0].type == TT_OpenBrace and callee.type == NodeIndentifier:
+            self.advance()
+            args = self.parse_data_structures_call_args(callee)
+            return DsCall(callee, args)
+        return callee
+
+    def parse_call_expression(self) -> Expression:
+        callee = self.parse_data_structures_call()
         if self.tokens[0].type == TT_OpenParen and callee.type == NodeIndentifier:
             self.advance()
             args = self.parse_args()
             return CallExpresstion(callee, args)
         return callee
 
-    def parse_args(self):
+    def parse_data_structures_call_args(self, ds: Indentifier) -> list[Expression]:
+        if self.tokens[0].type == TT_CloseBrace:
+            Error(f"No args were in Data Structure {ds.name}")
+        args = [self.parse_expression()]
+        while self.tokens[0].type == TT_Comma and self.advance(): 
+            args.append(self.parse_expression())
+            if self.tokens[0].type == TT_CloseBrace and self.advance(): 
+                return args
+            Error("Too many args in DsCall\nmatrice should take two args and tableau should take one")
+        Error("Expected closing brace ']'")
+        
+
+    def parse_args(self) -> list[Expression]:
         if self.tokens[0].type == TT_CloseParen:
             self.advance()
             return []

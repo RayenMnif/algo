@@ -8,6 +8,8 @@ BooleanValue = "booleen"
 NativeFnvalue = "NativeFunction"
 FunctionValue = "Fonction"
 ProcedureValue = "Procedure"
+MatriceValue = "Matrice"
+TableauValue = "Tableau"
 
 class RunTime:
     def __init__(self, type: str) -> None:
@@ -65,6 +67,21 @@ class ProcedureVal(RunTime):
 class StringVal(RunTime):
     def __init__(self, value: str) -> None:
         super().__init__(StringValue)
+        self.value = value
+    def __repr__(self) -> str:
+        return f"{self.value}"
+
+class MatriceVal(RunTime):
+    def __init__(self, value: list[list[RunTime]]) -> None:
+        super().__init__(MatriceValue)
+        self.value = value
+    def __repr__(self) -> str:
+        return f"{self.value}"
+
+
+class TableauVal(RunTime):
+    def __init__(self, value: list[RunTime]) -> None:
+        super().__init__(TableauValue)
         self.value = value
     def __repr__(self) -> str:
         return f"{self.value}"

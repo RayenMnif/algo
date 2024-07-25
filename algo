@@ -42,7 +42,7 @@ def main():
     Type "exit", "quit" to quit 
          "help", "credits" for more information
 
-    Algo v0.1
+    Algo v0.0.1 (Beta)
     """)
         while True:
             try:

@@ -170,6 +170,14 @@ def check_parameters(parameters, env):
         if env.lookUpVar(param).type != VarValues[paramType]:
             Error(f"parameters {param} type not matching")
 
+def eval_ds_call(call: DsCall, env: Environment):
+    args = call.args
+    for arg in args:
+        evaluated_agrument =  evaluate(arg ,env)
+        if evaluated_agrument.type != NumberValue and not isinstance(evaluated_agrument.value, int):
+            Error(f"tye d'argument est invalide {args[0].type} dans structure {DsCall.callee.name}, le argument doit etre un  entier")
+    return env.lookUpVar(call.callee.name)[args[0]][args[1]] if len(args) == 2 else env.lookUpVar(call.callee.name)[args[0]]
+
 
 def evaluate(astNode: Statement, env: Environment) -> RunTime:
     if astNode.type == NodeBinaryOperation: return eval_binary_operation(astNode, env)
@@ -187,4 +195,5 @@ def evaluate(astNode: Statement, env: Environment) -> RunTime:
     elif astNode.type == NodeForLoop: return eval_for_loop(astNode, env)
     elif astNode.type == NodeFunction: return eval_fonction(astNode, env)
     elif astNode.type == NodeProcedure: return eval_procedure(astNode, env)
+    elif astNode.type == NodeDSCall: return eval_ds_call(astNode, env)
     else: Error(f"Unvalid returning value (ast node : {astNode})")
