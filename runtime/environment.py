@@ -57,22 +57,22 @@ def setup_global_env():
     # abs
     env.assignVar("abs", NativeFnVal(lambda args: Error("abs takes one argumernt") if len(args) != 1 else NumberVal(abs(args[0].value)) if args[0].type == NumberValue else Error("abs takes a number as argument") ))
     # alea
-    env.assignVar("alea", NativeFnVal(lambda args: Error("alea takes one argumernt") if len(args) != 2 else NumberVal(float(randint(int(args[0].value), int(args[1].value))) if args[0].type == NumberValue and args[0].type == NumberValue and args[0].value < args[1].value else Error("alea takes two number as argument") )))
+    env.assignVar("alea", NativeFnVal(lambda args: Error("alea takes two numbers") if len(args) != 2 else NumberVal(float(randint(int(args[0].value), int(args[1].value))) if args[0].type == NumberValue and args[0].type == NumberValue and args[0].value < args[1].value else Error("alea takes two number as argument") )))
 
     # estnum
-    # not implimented yet
+    env.assignVar("estnum", NativeFnVal(lambda args: Error("estnum takes one argumernt (a string)") if len(args) != 1 else BooleanVal(args[0].value.isdigit()) if args[0].type == StringValue else Error("estnum works only with strings")))
+
+    #convch
+    env.assignVar("convch", NativeFnVal(lambda args: Error("convch takes one argumernt (a number)") if len(args) != 1 else StringVal(str(args[0].value)) if args[0].type == NumberValue else Error("convch works only with numbers")))
 
     # long
-    # not implimented yet
-
-    # long
-    # not implimented yet
+    env.assignVar("long", NativeFnVal(lambda args: Error("long takes one argumernt") if len(args) != 1 else NumberVal(len(args[0].value)) if args[0].type not in [BooleanValue, NumberValue] else Error(f"cannot calculate the length of a boolean value" if args[0].type == BooleanValue else "cannot calculate the length of a number")))
 
     # sous_chaine(ch, d, f)
     # not implimented yet
 
     # majus
-    # not implimented yet
+    env.assignVar("majus", NativeFnVal(lambda args: Error("majus takes one argumernt (a string)") if len(args) != 1 else StringVal(args[0].value.upper()) if args[0].type == StringValue else Error("majus works only with strings")))
 
     # effacer
     # not implimented yet
