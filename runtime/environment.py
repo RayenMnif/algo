@@ -49,9 +49,15 @@ def setup_global_env():
         if len(args) == 0:
             print()
         elif len(args) == 1 and args[0].type == MatriceValue:
-            print(args[0].value[args[0].pos[0]][args[0].pos[1]])
-        elif len(args) == 1 and args[0].type == MatriceValue:
-            print(args[0].value[args[0].pos])
+            try:
+                print(args[0].value[args[0].pos[0]][args[0].pos[1]])
+            except TypeError:
+                print(args[0].value)
+        elif len(args) == 1 and args[0].type == TableauValue:
+            try:
+                print(args[0].value[args[0].pos])
+            except TypeError:
+                print(args[0].value)
         else: [ print(arg, end="") if (i != len(args) - 1) else print(arg) for i, arg in enumerate(args) ]
 
     env.assignVar("ecrire", NativeFnVal(ecrire))
@@ -75,7 +81,15 @@ def setup_global_env():
     env.assignVar("convch", NativeFnVal(lambda args: Error("convch takes one argument (a number)") if len(args) != 1 else StringVal(str(args[0].value)) if args[0].type == NumberValue else Error("convch works only with numbers")))
 
     # long
-    env.assignVar("long", NativeFnVal(lambda args: Error("long takes one argument") if len(args) != 1 else NumberVal(len(args[0].value)) if args[0].type not in [BooleanValue, NumberValue] else Error(f"cannot calculate the length of a boolean value" if args[0].type == BooleanValue else "cannot calculate the length of a number")))
+    def long(agrs):
+        if len(args) != 1:
+            Error("long takes one argument")
+        else:
+            if args[0].type in [StringValue, TableauVal, MatriceVal]:
+                NumberVal(len(args[0].value))
+            else:
+                Error("Unvalid long argument")
+    env.assignVar("long", NativeFnVal(long))
 
     # lire
     def lire(args):

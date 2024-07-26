@@ -1,8 +1,7 @@
 fonction bonjour(M: matrice) : matrice
 debut
-    lire(M[0, 10])
-    ecrire(M[0, 10])
-    retourner M[0, 10]
+    lire(M[0, 0])
+    retourner M
 fin
 
 

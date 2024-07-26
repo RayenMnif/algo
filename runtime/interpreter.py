@@ -147,16 +147,16 @@ def eval_call_expression(function: CallExpresstion, env: Environment) -> RunTime
     elif caller.type in [FunctionValue, ProcedureValue]:
         func_env = Environment(env)
         # looking for matrice et tableau for predefining them
+        if len(caller.param) != len(function.args):
+            Error(f"FunctionError: number of args not matching in function '{caller.name}' ")
         for i in range(len(caller.param)):
             if function.args[i].type == NodeIndentifier:
                 if caller.param[i][1] in ["Mat", "matrice"]:
                     env.assignVar(function.args[i].name, MatriceVal(function.args[i].name, [[NullVal()]]))
                 if caller.param[i][1] in ["Tab", "tableau"]:
-                    env.assignVar(function.args[i].name, TableauVal(functions.args[i].name, [NullVal()]))
-        # checking call args 
+                    env.assignVar(function.args[i].name, TableauVal(function.args[i].name, [NullVal()]))
+        # evaluating call args 
         args = [evaluate(arg, env) for arg in function.args]
-        if len(caller.param) != len(args):
-            Error(f"FunctionError: number of args not matching in function '{caller.name}' ")
         # assigning variables in the function scope (environment)
         for i in range(len(args)):
             func_env.assignVar(caller.param[i][0], args[i])
@@ -190,18 +190,24 @@ def eval_ds_call(call: DsCall, env: Environment):
     # matrice
     if len(args) == 2:
         matrice = env.lookUpVar(call.callee.name)
+        if matrice.type == TableauValue:
+            Error(f"'{matrice.name}' est un tableau, c'est pas une matrice")
         if len(matrice.value) < args[0].value + 2:
             for i in range((args[0].value - len(matrice.value) + 1)):
                 matrice.value.append([NullVal()])
-        if len(matrice.value[args[0].value]) < args[1].value:
-            for i in range((args[1].value - len(matrice.value[args[0].value]) + 1)):
-                matrice.value[args[0].value].append(NullVal())
+        try:
+            if len(matrice.value[args[0].value]) < args[1].value:
+                for i in range((args[1].value - len(matrice.value[args[0].value]) + 1)):
+                    matrice.value[args[0].value].append(NullVal())
+        except TypeError: Error(f"you didn't specify the parameters in the matrice '{matrice.name}'")
         matrice.pos = args[0].value, args[1].value
         env.assignVar(call.callee.name, matrice)
         return matrice
     # tableau
     else :
         tableau = env.lookUpVar(call.callee.name)
+        if tableau.type == MatriceValue:
+            Error(f"'{tableau.name}' est une matrice, c'est pas un tableau")
         if len(tableau.value) < args[0].value:
             tableau.value.append([NullVal()]*(args[0].value - len(tableau.value)))
         tableau.pos = args[0].value
