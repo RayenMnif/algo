@@ -48,7 +48,11 @@ def setup_global_env():
     def ecrire(args):
         if len(args) == 0:
             print()
-        else:[ print(arg, end="") if (i != len(args) - 1) else print(arg) for i, arg in enumerate(args) ]
+        elif len(args) == 1 and args[0].type == MatriceValue:
+            print(args[0].value[args[0].pos[0]][args[0].pos[1]])
+        elif len(args) == 1 and args[0].type == MatriceValue:
+            print(args[0].value[args[0].pos])
+        else: [ print(arg, end="") if (i != len(args) - 1) else print(arg) for i, arg in enumerate(args) ]
 
     env.assignVar("ecrire", NativeFnVal(ecrire))
     env.assignVar("écrire", NativeFnVal(ecrire))
