@@ -1,9 +1,9 @@
-fonction bonjour(nom: chaine) : chaine
+fonction bonjour(M: matrice) : chaine
 debut
-    x <- "bonjour " + nom
-    retourner x
+    lire(M[0, 0])
+    retourner M
 fin
 
 
-x <- (bonjour("rayen"))
+x <- (bonjour(mat))
 ecrire(x)

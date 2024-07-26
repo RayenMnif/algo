@@ -150,9 +150,9 @@ def eval_call_expression(function: CallExpresstion, env: Environment) -> RunTime
         for i in range(len(caller.param)):
             if function.args[i].type == NodeIndentifier:
                 if caller.param[i][1] in ["Mat", "matrice"]:
-                    env.assignVar(function.args[i].name, MatriceVal([[NullVal()]]))
+                    env.assignVar(function.args[i].name, MatriceVal(function.args[i].name, [[NullVal()]]))
                 if caller.param[i][1] in ["Tab", "tableau"]:
-                    env.assignVar(function.args[i].name, TableauVal([NullVal()]))
+                    env.assignVar(function.args[i].name, TableauVal(functions.args[i].name, [NullVal()]))
         # checking call args 
         args = [evaluate(arg, env) for arg in function.args]
         if len(caller.param) != len(args):
@@ -194,8 +194,9 @@ def eval_ds_call(call: DsCall, env: Environment):
             for i in range((args[0].value - len(matrice.value) + 1)):
                 matrice.value.append([NullVal()])
         if len(matrice.value[args[0].value]) < args[1].value:
-            for i in range((args[1].value - len(matrice.value[args[0].value]))):
+            for i in range((args[1].value - len(matrice.value[args[0].value]) + 1)):
                 matrice.value[args[0].value].append(NullVal())
+        matrice.pos = args[0].value, args[1].value
         env.assignVar(call.callee.name, matrice)
         return matrice
     # tableau
@@ -203,6 +204,7 @@ def eval_ds_call(call: DsCall, env: Environment):
         tableau = env.lookUpVar(call.callee.name)
         if len(tableau.value) < args[0].value:
             tableau.value.append([NullVal()]*(args[0].value - len(tableau.value)))
+        tableau.pos = args[0].value
         env.assignVar(call.callee.name, tableau)
         return tableau
 

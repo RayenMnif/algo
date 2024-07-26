@@ -73,16 +73,20 @@ class StringVal(RunTime):
         return f"{self.value}"
 
 class MatriceVal(RunTime):
-    def __init__(self, value: list[list[RunTime]]) -> None:
+    def __init__(self, name: str, value: list[list[RunTime]], pos=None) -> None:
         super().__init__(MatriceValue)
+        self.name = name
+        self.pos = pos
         self.value = value
     def __repr__(self) -> str:
         return f"{self.value}"
 
 
 class TableauVal(RunTime):
-    def __init__(self, value: list[RunTime]) -> None:
+    def __init__(self,name: str,value: list[RunTime], pos=None) -> None:
         super().__init__(TableauValue)
+        self.name = name
+        self.pos = pos
         self.value = value
     def __repr__(self) -> str:
         return f"{self.value}"

@@ -6,7 +6,10 @@ def Error(error: str, at_line=None) -> None:
 
 
 VarValues = {"chaine": StringValue, "chaine_de_caractere": StringValue, "chaine_de_caractère": StringValue,
-            "reel": NumberValue, "réel": NumberValue}
+            "reel": NumberValue, "réel": NumberValue,
+             "entier": NumberValue,
+             "matrice": MatriceValue, "Mat": MatriceValue,
+             "tableau": TableauValue, "Tab": TableauValue}
 
 BinaryOperator =  ["*",
     '/',

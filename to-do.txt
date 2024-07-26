@@ -1,7 +1,4 @@
 - data structure: Matrice / Tableau
-    - calls (done)
-    - initializing : x <- Mat(5x5)
-                     x <- Tab(5)
     - modifying native function to work with them
 - complete all native function
 - separting integers (entiers) and floats (reels)

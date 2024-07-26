@@ -6,7 +6,7 @@ TT_EOF = "EOF"
 # --- var types ---
 TT_Entier = "Entier"
 TT_Reel = "Réel"
-TT_String = "String"
+TT_String = "Chaine"
 # --- var related ---
 TT_Indentifier = "Indentifier"
 TT_Asignment = "Asignment"
@@ -45,6 +45,8 @@ TT_pour = "pour"
 TT_pas = "pas"
 TT_faire = "faire"
 TT_finpour = "fin_pour"
+# --- other --- 
+TT_Comment = "Commentaire"
 
 
 
@@ -108,6 +110,11 @@ class Lexer:
         while src:
 
             if self.is_skippable(src[0]): src.pop(0)
+
+            elif src[0] == "#":
+                src.pop(0)
+                while src and src[0] != "\n":
+                    src.pop(0)
 
             elif src[0] == "(":
                 tokens.append(Token("(", TT_OpenParen))

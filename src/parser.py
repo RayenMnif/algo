@@ -90,6 +90,8 @@ class Parser:
         if self.tokens[0].type == TT_CloseBrace:
             Error(f"No args were in Data Structure {ds.name}")
         args = [self.parse_expression()]
+        if self.tokens[0].type == TT_CloseBrace and self.advance(): 
+            return args
         while self.tokens[0].type == TT_Comma and self.advance(): 
             args.append(self.parse_expression())
             if self.tokens[0].type == TT_CloseBrace and self.advance(): 
@@ -198,7 +200,7 @@ class Parser:
         if self.advance().type != TT_Colon: Error("Expected a Colon ':'")
         return_type = self.parse_primary_expressions()
         self.check_argType(return_type)
-        if self.advance().type != TT_Debut: Error("Expected 'Debut'")
+        if self.advance().type != TT_Debut: Error("Expected 'debut'")
         statement = self.parse_block_statement([TT_Fin])
         self.advance()
         return Function(callee, parameters, return_type.name, statement)
@@ -210,7 +212,7 @@ class Parser:
         if callee.type != NodeIndentifier: Error(f"Unvalid function name '{callee}'")
         if self.advance().type != TT_OpenParen: Error("Expected open parenthesis '('")
         parameters = self.parse_parameters_list()
-        if self.advance().type != TT_Debut: Error("Expected 'Debut'")
+        if self.advance().type != TT_Debut: Error("Expected 'debut'")
         statement = self.parse_block_statement([TT_Fin])
         self.advance()
         return Procedure(callee, parameters, statement)

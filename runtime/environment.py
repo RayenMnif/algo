@@ -45,8 +45,13 @@ def setup_global_env():
 
     # --- native functions ---
     # ecrire
-    env.assignVar("ecrire", NativeFnVal(lambda args: print() if len(args) == 0 else [ print(arg, end="") if (i != len(args) - 1) else print(arg) for i, arg in enumerate(args) ]))
-    env.assignVar("écrire", NativeFnVal(lambda args: print() if len(args) == 0 else [print(arg) for arg in args]))
+    def ecrire(args):
+        if len(args) == 0:
+            print()
+        else:[ print(arg, end="") if (i != len(args) - 1) else print(arg) for i, arg in enumerate(args) ]
+
+    env.assignVar("ecrire", NativeFnVal(ecrire))
+    env.assignVar("écrire", NativeFnVal(ecrire))
     # arrondi
     env.assignVar("arrondi", NativeFnVal(lambda args: Error("arrondi takes one argument") if len(args) != 1 else NumberVal(round(args[0].value)) if args[0].type == NumberValue else Error("arrondi takes a number as argument") ))
     # racine_carré
@@ -76,9 +81,11 @@ def setup_global_env():
             if len(args) == 1:
                 if args[0].type == StringValue:
                     print(args[0].value, end="")
-                    return StringVal(input())
-                elif args[0].type in [MatriceValue, TableauValue]:
-                    return StringVal(input())
+                    return StringVal(input("> "))
+                elif args[0].type == MatriceValue:
+                    args[0].value[args[0].pos[0]][args[0].pos[1]] = StringVal(input("> "))
+                elif args[0].type == TableauValue:
+                    args[0].value[args[0].pos] = StringVal(input("> "))
                 else: Error("Unvalid argument type\nlire should take a string as argument or no argument")
 
     env.assignVar("lire", NativeFnVal(lire))
