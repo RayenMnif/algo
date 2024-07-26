@@ -1,4 +1,5 @@
 from runtime.environment import Environment
+from collections import defaultdict
 from src.utils import *
 from runtime.value import *
 from src.ast import *
@@ -139,22 +140,31 @@ def eval_for_loop(loop: forLoop, env: Environment) -> RunTime:
     return NullVal()
 
 def eval_call_expression(function: CallExpresstion, env: Environment) -> RunTime:
-    args = [evaluate(arg, env) for arg in function.args]
     caller : NativeFnVal = evaluate(function.callee, env)
     if caller.type not in [NativeFnvalue, FunctionValue, ProcedureValue] : Error("You can only call functions")
     if caller.type == NativeFnvalue:
-        result = caller.call(args)
+        result = caller.call([evaluate(arg, env) for arg in function.args])
     elif caller.type in [FunctionValue, ProcedureValue]:
+        func_env = Environment(env)
+        # looking for matrice et tableau for predefining them
+        for i in range(len(caller.param)):
+            if function.args[i].type == NodeIndentifier:
+                if caller.param[i][1] in ["Mat", "matrice"]:
+                    env.assignVar(function.args[i].name, MatriceVal([[NullVal()]]))
+                if caller.param[i][1] in ["Tab", "tableau"]:
+                    env.assignVar(function.args[i].name, TableauVal([NullVal()]))
+        # checking call args 
+        args = [evaluate(arg, env) for arg in function.args]
         if len(caller.param) != len(args):
             Error(f"FunctionError: number of args not matching in function '{caller.name}' ")
-        func_env = Environment(env)
+        # assigning variables in the function scope (environment)
         for i in range(len(args)):
             func_env.assignVar(caller.param[i][0], args[i])
         check_parameters(caller.param, func_env)
         if caller.type == FunctionValue:
             func_return = evaluate(caller.body , func_env)
             if func_return.type != VarValues[caller.return_type]:
-                Error(f"returning value in function '{caller.name}' not matching")
+                Error(f"la valeur de retour de la fonction '{caller.name}' ne correspond pas")
             return func_return
         return NullVal()
     return result
@@ -166,17 +176,35 @@ def eval_procedure(function: Function, env: Environment) -> RunTime:
     return env.assignVar(function.callee.name, ProcedureVal(function.callee.name, function.parameters, function.statement, env))
 
 def check_parameters(parameters, env):
+    """ checks the parameters types retunrs an error if parameter type not matching"""
     for param, paramType in parameters:
         if env.lookUpVar(param).type != VarValues[paramType]:
-            Error(f"parameters {param} type not matching")
+            Error(f"la valeur de paramètere {param} ne correspond pas")
 
 def eval_ds_call(call: DsCall, env: Environment):
     args = call.args
     for arg in args:
         evaluated_agrument =  evaluate(arg ,env)
         if evaluated_agrument.type != NumberValue and not isinstance(evaluated_agrument.value, int):
-            Error(f"tye d'argument est invalide {args[0].type} dans structure {DsCall.callee.name}, le argument doit etre un  entier")
-    return env.lookUpVar(call.callee.name)[args[0]][args[1]] if len(args) == 2 else env.lookUpVar(call.callee.name)[args[0]]
+            Error(f"type d'argument est invalide {args[0].type} dans structure {DsCall.callee.name}, le argument doit etre un  entier")
+    # matrice
+    if len(args) == 2:
+        matrice = env.lookUpVar(call.callee.name)
+        if len(matrice.value) < args[0].value + 2:
+            for i in range((args[0].value - len(matrice.value) + 1)):
+                matrice.value.append([NullVal()])
+        if len(matrice.value[args[0].value]) < args[1].value:
+            for i in range((args[1].value - len(matrice.value[args[0].value]))):
+                matrice.value[args[0].value].append(NullVal())
+        env.assignVar(call.callee.name, matrice)
+        return matrice
+    # tableau
+    else :
+        tableau = env.lookUpVar(call.callee.name)
+        if len(tableau.value) < args[0].value:
+            tableau.value.append([NullVal()]*(args[0].value - len(tableau.value)))
+        env.assignVar(call.callee.name, tableau)
+        return tableau
 
 
 def evaluate(astNode: Statement, env: Environment) -> RunTime:

@@ -1,5 +1,6 @@
 from src.ast import BlockStatemnt
 
+
 StringValue = "ChaineDeCaracter"
 AssignmentValue = "Assignment"
 NumberValue = "Nombre"

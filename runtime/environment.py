@@ -69,7 +69,20 @@ def setup_global_env():
     env.assignVar("long", NativeFnVal(lambda args: Error("long takes one argument") if len(args) != 1 else NumberVal(len(args[0].value)) if args[0].type not in [BooleanValue, NumberValue] else Error(f"cannot calculate the length of a boolean value" if args[0].type == BooleanValue else "cannot calculate the length of a number")))
 
     # lire
-    env.assignVar("lire", NativeFnVal(lambda args: Error("lire takes no argument") if len(args) != 0 else StringVal(input())))
+    def lire(args):
+        if len(args) > 1:
+            Error("lire takes no argument or one argument")
+        else:
+            if len(args) == 1:
+                if args[0].type == StringValue:
+                    print(args[0].value, end="")
+                    return StringVal(input())
+                elif args[0].type in [MatriceValue, TableauValue]:
+                    return StringVal(input())
+                else: Error("Unvalid argument type\nlire should take a string as argument or no argument")
+
+    env.assignVar("lire", NativeFnVal(lire))
+    
 
     # sous_chaine(ch, d, f)
     # not implimented yet
