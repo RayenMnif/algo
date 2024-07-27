@@ -125,10 +125,10 @@ def eval_for_loop(loop: forLoop, env: Environment) -> RunTime:
     i = interval[0].value
     loop_env.assignVar(loop.var_name, NumberVal(i))
     if interval[1].value < interval[0].value:
-        Error("Error in loop range : starting value is bigger than ending value")
+        Error("Erreur de la plage de boucle pour: la valueur initial est plus que la valeur final")
     if len(interval) == 3:
         if interval[2].value > interval[1].value:
-            Error("Error in loop range : pas value is bigger than ending value")
+            Error("Erreur de la plage de boucle pour: la valeur du pas est plus grand que la valueur final")
     while i != int(interval[1].value + 1):
         evaluate(loop.stmnt, loop_env)
         if len(interval) == 3:
@@ -182,11 +182,13 @@ def check_parameters(parameters, env):
             Error(f"la valeur de paramètere {param} ne correspond pas")
 
 def eval_ds_call(call: DsCall, env: Environment):
-    args = call.args
-    for arg in args:
+    arguments = call.args
+    args = []
+    for arg in arguments:
         evaluated_agrument =  evaluate(arg ,env)
         if evaluated_agrument.type != NumberValue and not isinstance(evaluated_agrument.value, int):
             Error(f"type d'argument est invalide {args[0].type} dans structure {DsCall.callee.name}, le argument doit etre un  entier")
+        args.append(evaluated_agrument)
     # matrice
     if len(args) == 2:
         matrice = env.lookUpVar(call.callee.name)
