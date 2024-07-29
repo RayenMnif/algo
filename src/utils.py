@@ -9,7 +9,8 @@ VarValues = {"chaine": StringValue, "chaine_de_caractere": StringValue, "chaine_
             "reel": NumberValue, "réel": NumberValue,
              "entier": NumberValue,
              "matrice": MatriceValue, "Mat": MatriceValue,
-             "tableau": TableauValue, "Tab": TableauValue}
+             "tableau": TableauValue, "Tab": TableauValue,
+             "nulle": NullValue}
 
 BinaryOperator =  ["*",
     '/',

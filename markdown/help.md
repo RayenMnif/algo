@@ -10,6 +10,30 @@
                                           
      Tunisian shitty pseudo/programming language
 
+# Table of Contents
+
+- [Language Introduction and Setup](#language-introduction-and-setup)
+  - [Introduction](#introduction)
+  - [Setup](#setup)
+- [Variables](#variables)
+  - [Variable Types](#variable-types)
+    - [Entier](#entier)
+    - [Reel](#reel)
+    - [Chaine](#chaine)
+    - [Booleen](#booleen)
+    - [Nulle](#nulle)
+    - [Tableau](#tableau)
+    - [Matrice](#matrice)
+- [Functions](#functions)
+  - [Fonction](#fonction)
+  - [Procedure](#procedure)
+  - [Native Functions](#native-functions)
+- [Operations](#operations)
+  - [Binary Operations](#binary-operations)
+  - [Logical Operations](#logical-operations)
+  - [Comparison Operations](#comparison-operations)
+- [Code Simples](#code-simples)
+
 # language introduction and setup
 
 ## introduction
@@ -58,7 +82,12 @@ algo is a dynamically typed language. This means that variables do not have type
 #### booleen
 - **booleen** or **booléen** : 
 Boolean values, named after the mathematician George Boole, represent one of two possible states: `vrai` or `faux`. In computer science and programming, Boolean values are used to perform [logical operations](#logical-operations) and control the flow of a program through conditions and loops.
-  
+
+
+#### nulle
+- **nulle**: null is a variable does not reference any object or value. It is often used to indicate an absence of a value or an uninitialized variable. Mostly used for empty alocated memory like in [matrice](#matrice) and [tableau](#tableau)
+
+
 #### tableau
 - **tableau** : array of values, our language auto assign it like the real tunisian algo 
 
@@ -157,7 +186,7 @@ fonction hello(name : chaine) : chaine
 
 ### procedure
 
-procedure in algo are more likely for organizing the code they're like moving a chunck of code, their return value is of type [Nulle](####Nulle)
+procedure in algo are more likely for organizing the code they're like moving a chunck of code, their return value is of type [Nulle](#nulle)
 and same as [fonction](#fonction) you need to specify arguments types
 
 **here's an example**
@@ -170,9 +199,58 @@ procedure hello(name : chaine)
 ```
 
 ### native functions
-native functions are functions implimented directly in the interpreter 
-#### functions simples
-- 
+
+1. `ecrire(x)`
+   - **Description**: Displays the value of `x` to the console. Can handle various types such as entier, reel, chaine, etc.
+   - **Example**: `ecrire("Hello, World!")` will output `Hello, World!`.
+
+2. `lire()`
+   - **Description**: Reads a single line of input from the user and returns it as a string.
+   - **Example**:
+      - `x <- lire()` will prompt the user for input and store it in `x`.
+      - `lire(M[i, j])` used for reading [matrice](#matrice) content where `i` and `j` are both [entier](#entier)
+      - `lire(M[i])` used for reading [tableau](#tableau) content where `i` is an [entier](#entier)
+
+3. `long(chaine)`
+   - **Description**: Returns the length of the given string.
+   - **Example**: `long("Hello")` returns `5`.
+
+4. `valeur(chaine)`
+   - **Description**: Converts a string to an integer.
+   - **Example**: `x <- valeur("123")` will convert the string `"123"` to the integer `123`.
+
+5. `convch(x)`
+   - **Description**: Converts a string to a floating-point number.
+   - **Example**: `x <- convch(123.45)` will convert the number `123.45` to the string number `"123.45"`.
+
+6. `abs(x)`
+   - **Description**: Returns the absolute value of a number.
+   - **Example**: `abs(-5)` returns `5`.
+
+7. `sous_chaine(chaine, debut, fin)`
+   - **Description**: Returns the substring of `chaine` starting at index `debut` and ending at index `fin`.
+   - **Example**: `sous_chaine("Hello, World!", 0, 5)` returns `"Hello"`.
+
+8. `alea(debut, fin)`
+   - **Description**: Returns a random integer between `debut` and `fin` inclusive.
+   - **Example**: `alea(1, 10)` might return any integer between `1` and `10`.
+
+9. `arrondi(x)`
+   - **Description**: Rounds the given floating-point number to the nearest entier.
+   - **Example**: `arrondi(4.7)` returns `5`.
+
+10. `racine_carre(x)`
+    - **Description**: Returns the square root of the given number.
+    - **Example**: `racine_carre(16)` returns `4`.
+
+11. `ent(x)`
+    - **Description**: Returns the integer part of a floating-point number (truncates the decimal part).
+    - **Example**: `ent(4.7)` returns `4`.
+
+12. `majus(chaine)`
+    - **Description**: Converts all characters in the string to uppercase.
+    - **Example**: `majus("Hello, World!")` returns `"HELLO, WORLD!"`.
+
 
 
 ## operations
@@ -182,70 +260,102 @@ native functions are functions implimented directly in the interpreter
 - **+** : Addition (+): Adds two operands.
 
   ```
-  x <- 4 + 12                 # returns 16
-  x <- 4 + 12.5               # returns 16.5
-  x <- 0.2 + 0.15             # returns 0.17
-  x <- "hello " + 'world'     # returns "hello world"
+  4 + 12                 # returns 16
+  4 + 12.5               # returns 16.5
+  0.2 + 0.15             # returns 0.17
+  "hello " + 'world'     # returns "hello world"
   ```
 
 - **\*** : Subtraction (-): Subtracts the second operand from the first.
     
     ```
-    x <- 12 - 4                 # returns 8
-    x <- 4 - 12.5               # returns -8.5
-    x <- 0.2 - 0.15             # returns -0.13
+    12 - 4                 # returns 8
+    4 - 12.5               # returns -8.5
+    0.2 - 0.15             # returns -0.13
     ```
 - **/** : Division (/): Divides the first operand by the second.
   ```
-  x <- 12 / 4                 # returns 3.0
-  x <- 4 / 12.5               # returns 0.32
-  x <- 0.2 / 0.15             # returns 1.3333
+  12 / 4                 # returns 3.0
+  4 / 12.5               # returns 0.32
+  0.2 / 0.15             # returns 1.3333
   ```
 - **mod** : Modulo (mod): Returns the remainder of the division of the first operand by the second.
     
     ```
-    x <- 12 mod 5                 # returns 2
-    x <- 4 mod 12                 # returns 4
-    x <- 0.2 mod 0.15             # returns 0.05
+    12 mod 5                 # returns 2
+    4 mod 12                 # returns 4
+    0.2 mod 0.15             # returns 0.05
     ```
 - **div** : Integer Division (div): Divides the first operand by the second and returns the integer quotient, discarding the remainder.
   ```
-  x <- 12 div 5                # returns 2
-  x <- 4 div 12                # returns 0
+  12 div 5                # returns 2
+  4 div 12                # returns 0
   ```
 
 ### Logical Operations
 
 - **et** : Logical AND (et): Returns `vrai` if both operands are `vrai`; otherwise, returns `faux`.
 
-  ```faux
-  x <- vrai et vrai              # returns vrai
-  x <- vrai et faux              # returns faux
-  x <- faux et faux              # returns faux
+  ```
+  vrai et vrai              # returns vrai
+  vrai et faux              # returns faux
+  faux et faux              # returns faux
   ```
 
 - **ou** : Logical OR (ou): Returns `vrai` one or both operands are `vrai`; otherwise, returns `faux`.
 
-  ```faux
-  x <- vrai ou vrai              # returns vrai
-  x <- vrai ou faux              # returns vrai
-  x <- faux ou faux              # returns faux
+  ```
+  vrai ou vrai              # returns vrai
+  vrai ou faux              # returns vrai
+  faux ou faux              # returns faux
   ```
 
 - **=** : Logical Equals (=): Returns `vrai` operands values are equals ; otherwise, returns `faux`.
 
   ```
-  x <- vrai = vrai               # returns vrai
-  x <- 5 = 5                     # returns vrai
-  x <- "hello" = "hi"            # returns faux
+  vrai = vrai               # returns vrai
+  5 = 5                     # returns vrai
+  "hello" = "hi"            # returns faux
   ```
 
 - **!=** : Logical Not (!=): Returns `vrai` operands values are diffrent ; otherwise, returns `faux`.
 
   ```
-  x <- vrai != vrai                  # returns faux
-  x <- 5 != vrai                     # returns vrai
-  x <- "hello" != "hello"            # returns faux
+  vrai != vrai                  # returns faux
+  5 != vrai                     # returns vrai
+  "hello" != "hello"            # returns faux
   ```
 
+### Comparison Operations
+
+- **<** : Less than (<): Returns vrai if the first operand is less than the second operand; otherwise, returns faux.
+
+
+  ```
+  3 < 5                     # returns vrai
+  5 < 3                     # returns faux
+  ```
+
+- **>** : Greater than (>): Returns vrai if the first operand is greater than the second operand; otherwise, returns faux.
+
+    ```
+    5 > 3                     # returns vrai
+    3 > 5                     # returns faux
+    ```
+
+- **<=** : Less than or equal to (<=): Returns vrai if the first operand is less than or equal to the second operand; otherwise, returns faux.
+
+  ```
+  3 <= 5                    # returns vrai
+  5 <= 5                    # returns vrai
+  5 <= 3                    # returns faux
+  ```
+
+- **>=** : Greater than or equal to (>=): Returns vrai if the first operand is greater than or equal to the second operand; otherwise, returns faux.
+
+  ```
+  5 >= 3                    # returns vrai
+  5 >= 5                    # returns vrai
+  3 >= 5                    # returns faux
+  ```
 ## code simples
