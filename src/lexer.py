@@ -196,9 +196,9 @@ class Lexer:
                     src.pop(0)
                 tokens.append(Token(string, TT_String))
 
-            elif src[0].isalpha() or src[0] in "_'":
+            elif src[0].isalpha() or src[0] in "_'123456789":
                 keyword =  ""
-                while src and (src[0].isalpha() or src[0] in "_'"):
+                while src and (src[0].isalpha() or src[0] in "_'123456789"):
                     keyword += src[0]
                     src.pop(0)
                 tokens.append(Token(keyword, TT_Indentifier) if keyword not in KEYWORDS.keys() else Token(keyword, KEYWORDS[keyword]))

@@ -1,10 +1,1 @@
-fonction remplir(mat: matrice, n: reel): matrice
-debut
-    pour i de 0 a 5 faire
-        lire(mat[0, 0])
-    fin_pour
-    retourner mat
-fin
 
-m <- remplir(mat, 5)
-ecrire(m)

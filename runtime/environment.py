@@ -123,12 +123,54 @@ def setup_global_env():
     def sous_chaine(args, env):
         if len(args) != 3:
             Error("sous_chaine prend trois arguments\nsous_chaine(ch, d, f) d'ou ch est la chaine, d est le debut et f est la fin")
-    # not implimented yet
+        if args[0].type != StringValue or args[1].type != NumberValue or args[2].type != NumberValue:
+            Error("sous_chaine prend trois arguments\nsous_chaine(ch, d, f) d'ou ch est la chaine, d (entier) est le debut et f (entier) est la fin")
+        ch : StringVal = args[0].value
+        d : NumberVal = args[1].value
+        f : NullVal = args[2].value
+        if not isinstance(d, int) or not isinstance(f, int):
+            Error("sous_chaine prend trois arguments\nsous_chaine(ch, d, f) d'ou ch est la chaine, d (entier) est le debut et f (entier) est la fin")
+        return StringVal(ch[d:f])
+    env.assignVar("sous_chaine", NativeFnVal(sous_chaine))
+
+
+    # valeur 
+    def valeur(args, env):
+        if len(args) != 1:
+            Error("valeur(x) prend un seul argument (une chaine)")
+        if args[0].value.isdigit():
+            return NumberVal(float(args[0].value))
+        Error(f"valeur('{args[0].value}') : la chaine '{args[0].value}' n'est pas une chaine numerique")
+    env.assignVar("valeur", NativeFnVal(valeur))
+
+    # pos(ch1, ch2) 
+    def pos(args, env):
+        if len(args) != 2:
+            Error("pos(ch1, ch2) prend deux arguments (de type chaine)")
+        if args[0].type != args[1].type != StringValue:
+            Error("pos(ch1, ch2) prend deux arguments (de type chaine)")
+        ch1 : str = args[0].value
+        ch2 : str = args[1].value
+        return StringVal(ch2.find(ch1))
+
+    env.assignVar("pos", NativeFnVal(pos))
+
 
     # majus
     env.assignVar("majus", NativeFnVal(lambda args, env: Error("majus prend un seul argument (une chaine)") if len(args) != 1 else StringVal(args[0].value.upper()) if args[0].type == StringValue else Error("majus prend des chaines de caracteres seulement")))
 
-    # effacer
-    # not implimented yet
+    # effacer(ch, d, f)
+    def effacer(args, env):
+        if len(args) != 3:
+            Error("effacer prend trois arguments\neffacer(ch, d, f) d'ou ch est la chaine, d est le debut et f est la fin")
+        if args[0].type != StringValue or args[1].type != NumberValue or args[2].type != NumberValue:
+            Error("effacer prend trois arguments\neffacer(ch, d, f) d'ou ch est la chaine, d (entier) est le debut et f (entier) est la fin")
+        ch : str = args[0].value
+        d : int = args[1].value
+        f : int = args[2].value
+        if not isinstance(d, int) or not isinstance(f, int):
+            Error("effacer prend trois arguments\neffacer(ch, d, f) d'ou ch est la chaine, d (entier) est le debut et f (entier) est la fin")
+        return StringVal(ch[:d]+ch[f:])
+    env.assignVar("effacer", NativeFnVal(effacer))
 
     return env
