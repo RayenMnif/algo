@@ -231,25 +231,33 @@ procedure hello(name : chaine)
    - **Description**: Returns the substring of `chaine` starting at index `debut` and ending at index `fin`.
    - **Example**: `sous_chaine("Hello, World!", 0, 5)` returns `"Hello"`.
 
-8. `alea(debut, fin)`
+8. `effacer(chaine, debut, fin)`
+   - **Description**: Returns the deleted part of substing of `chaine` starting at index `debut` and ending at index `fin`.
+   - **Example**: `effacer("Hello, World!", 0, 5)` returns `", World!"`.
+
+9. `alea(debut, fin)`
    - **Description**: Returns a random integer between `debut` and `fin` inclusive.
    - **Example**: `alea(1, 10)` might return any integer between `1` and `10`.
 
-9. `arrondi(x)`
+10. `arrondi(x)`
    - **Description**: Rounds the given floating-point number to the nearest entier.
    - **Example**: `arrondi(4.7)` returns `5`.
 
-10. `racine_carre(x)`
+11. `racine_carre(x)`
     - **Description**: Returns the square root of the given number.
     - **Example**: `racine_carre(16)` returns `4`.
 
-11. `ent(x)`
+12. `ent(x)`
     - **Description**: Returns the integer part of a floating-point number (truncates the decimal part).
     - **Example**: `ent(4.7)` returns `4`.
 
-12. `majus(chaine)`
+13. `majus(chaine)`
     - **Description**: Converts all characters in the string to uppercase.
     - **Example**: `majus("Hello, World!")` returns `"HELLO, WORLD!"`.
+
+14. `pos(ch1, ch2)`
+    - **Description**: return the starting index of ch1 in ch2 else it returns `-1`
+    - **Example**: `pos("3456", "123456789)` returns `2`.
 
 
 
