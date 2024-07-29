@@ -1,9 +1,10 @@
-fonction bonjour(M: matrice) : matrice
+fonction remplir(mat: matrice, n: reel): matrice
 debut
-    lire(M[0, 0])
-    retourner M
+    pour i de 0 a 5 faire
+        lire(mat[0, 0])
+    fin_pour
+    retourner mat
 fin
 
-
-x <- (bonjour(mat))
-ecrire(x)
+m <- remplir(mat, 5)
+ecrire(m)

@@ -1,6 +1,0 @@
-- data structure: Matrice / Tableau
-    - modifying native function to work with them
-- complete all native function
-- separting integers (entiers) and floats (reels)
-- errors in french (probably the hardest part LOL)
-- finishing the docs i'll need the boys (chabiba) for that 

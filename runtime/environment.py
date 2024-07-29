@@ -23,7 +23,7 @@ class Environment:
 
     def resolve (self, var_name: str):
         if var_name in self.variables.keys(): return self
-        if self.parent == None: Error(f"Canno't resolve '{var_name}' as it does not exist")
+        if self.parent == None: Error(f"impossible de résoudre la variable '{var_name}' car elle n'exite pas")
         return self.parent.resolve(var_name)
 
     def get_scope(self, var_name: str):
@@ -45,7 +45,7 @@ def setup_global_env():
 
     # --- native functions ---
     # ecrire
-    def ecrire(args):
+    def ecrire(args, env):
         if len(args) == 0:
             print()
         elif len(args) == 1 and args[0].type == MatriceValue:
@@ -63,57 +63,70 @@ def setup_global_env():
     env.assignVar("ecrire", NativeFnVal(ecrire))
     env.assignVar("écrire", NativeFnVal(ecrire))
     # arrondi
-    env.assignVar("arrondi", NativeFnVal(lambda args: Error("arrondi takes one argument") if len(args) != 1 else NumberVal(round(args[0].value)) if args[0].type == NumberValue else Error("arrondi takes a number as argument") ))
+    env.assignVar("arrondi", NativeFnVal(lambda args, env: Error("arrondi prend un seul argument") if len(args) != 1 else NumberVal(round(args[0].value)) if args[0].type == NumberValue else Error("arrondi prend un nombre comme argument") ))
     # racine_carré
-    env.assignVar("racine_carre", NativeFnVal(lambda args: Error("racine_carre takes one argument") if len(args) != 1 else NumberVal(sqrt(args[0].value)) if args[0].type == NumberValue else Error("racine_carre takes a number as argument") ))
-    env.assignVar("racine_carré", NativeFnVal(lambda args: Error("racine_carré takes one argument") if len(args) != 1 else NumberVal(sqrt(args[0].value)) if args[0].type == NumberValue else Error("racine_carre takes a number as argument") ))
+    env.assignVar("racine_carre", NativeFnVal(lambda args, env: Error("racine_carre prend un seul argument") if len(args) != 1 else NumberVal(sqrt(args[0].value)) if args[0].type == NumberValue else Error("racine_carre prend un nombre comme argument") ))
+    env.assignVar("racine_carré", NativeFnVal(lambda args, env: Error("racine_carré prend un seul argument") if len(args) != 1 else NumberVal(sqrt(args[0].value)) if args[0].type == NumberValue else Error("racine_carre prend un nombre comme argument") ))
     # ent
-    env.assignVar("ent", NativeFnVal(lambda args: Error("ent takes one argument") if len(args) != 1 else NumberVal(int(args[0].value)) if args[0].type == NumberValue else Error("ent takes a number as argument") ))
+    env.assignVar("ent", NativeFnVal(lambda args, env: Error("ent prend un seul argument") if len(args) != 1 else NumberVal(int(args[0].value)) if args[0].type == NumberValue else Error("ent prend un nombre comme argument") ))
     # abs
-    env.assignVar("abs", NativeFnVal(lambda args: Error("abs takes one argument") if len(args) != 1 else NumberVal(abs(args[0].value)) if args[0].type == NumberValue else Error("abs takes a number as argument") ))
+    env.assignVar("abs", NativeFnVal(lambda args, env: Error("abs prend un seul argument") if len(args) != 1 else NumberVal(abs(args[0].value)) if args[0].type == NumberValue else Error("abs prend un nombre comme argument") ))
     # alea
-    env.assignVar("alea", NativeFnVal(lambda args: Error("alea takes two numbers") if len(args) != 2 else NumberVal(float(randint(int(args[0].value), int(args[1].value))) if args[0].type == NumberValue and args[0].type == NumberValue and args[0].value < args[1].value else Error("alea takes two number as argument") )))
+    env.assignVar("alea", NativeFnVal(lambda args, env: Error("alea takes two numbers") if len(args) != 2 else NumberVal(float(randint(int(args[0].value), int(args[1].value))) if args[0].type == NumberValue and args[0].type == NumberValue and args[0].value < args[1].value else Error("alea takes two number as argument") )))
 
     # estnum
-    env.assignVar("estnum", NativeFnVal(lambda args: Error("estnum takes one argument (a string)") if len(args) != 1 else BooleanVal(args[0].value.isdigit()) if args[0].type == StringValue else Error("estnum works only with strings")))
+    env.assignVar("estnum", NativeFnVal(lambda args, env: Error("estnum prend un seul argument (une chaine)") if len(args) != 1 else BooleanVal(args[0].value.isdigit()) if args[0].type == StringValue else Error("estnum prend des chaines de caracteres seulement")))
 
     #convch
-    env.assignVar("convch", NativeFnVal(lambda args: Error("convch takes one argument (a number)") if len(args) != 1 else StringVal(str(args[0].value)) if args[0].type == NumberValue else Error("convch works only with numbers")))
+    env.assignVar("convch", NativeFnVal(lambda args, env: Error("convch prend un seul argument (une valeur numerique)") if len(args) != 1 else StringVal(str(args[0].value)) if args[0].type == NumberValue else Error("convch prend seulement des valueur numerique")))
 
     # long
     def long(agrs):
         if len(args) != 1:
-            Error("long takes one argument")
+            Error("long prend un seul argument")
         else:
             if args[0].type in [StringValue, TableauVal, MatriceVal]:
                 NumberVal(len(args[0].value))
             else:
-                Error("Unvalid long argument")
+                Error("argument long est unvalid")
     env.assignVar("long", NativeFnVal(long))
 
     # lire
-    def lire(args):
+    def lire(args : list[RunTime], env : Environment):
         if len(args) > 1:
-            Error("lire takes no argument or one argument")
+            Error("lire prend un argument ou aucun argument")
         else:
             if len(args) == 1:
                 if args[0].type == StringValue:
                     print(args[0].value, end="")
                     return StringVal(input("> "))
                 elif args[0].type == MatriceValue:
-                    args[0].value[args[0].pos[0]][args[0].pos[1]] = StringVal(input("> "))
+                    matrice : MatriceVal = args[0]
+                    if matrice.pos:
+                        args[0].value[args[0].pos[0]][args[0].pos[1]] = StringVal(input("> "))
+                        env.assignVar(matrice.name, MatriceVal(matrice.name, matrice.value))
+                    else: 
+                        Error(f"Il est impossible de lire la matrice '{matrice.name}' il faux specifier les argument\nExemple: lire({matrice.name}[0,0])")
                 elif args[0].type == TableauValue:
-                    args[0].value[args[0].pos] = StringVal(input("> "))
-                else: Error("Unvalid argument type\nlire should take a string as argument or no argument")
+                    tableau : TableauVal = args[0]
+                    if tableau.pos:
+                        args[0].value[args[0].pos] = StringVal(input("> "))
+                        env.assignVar(tableau.name, TableauVal(tableau.name, tableau.value))
+                    else:
+                        Error(f"Il est impossible de lire la tableau '{tableau.name}' il faux specifier les argument\nExemple: lire({tableau.name}[0])")
+                else: Error("Unvalid argument type\nlire should take une chaine as argument or no argument")
 
     env.assignVar("lire", NativeFnVal(lire))
     
 
     # sous_chaine(ch, d, f)
+    def sous_chaine(args, env):
+        if len(args) != 3:
+            Error("sous_chaine prend trois arguments\nsous_chaine(ch, d, f) d'ou ch est la chaine, d est le debut et f est la fin")
     # not implimented yet
 
     # majus
-    env.assignVar("majus", NativeFnVal(lambda args: Error("majus takes one argument (a string)") if len(args) != 1 else StringVal(args[0].value.upper()) if args[0].type == StringValue else Error("majus works only with strings")))
+    env.assignVar("majus", NativeFnVal(lambda args, env: Error("majus prend un seul argument (une chaine)") if len(args) != 1 else StringVal(args[0].value.upper()) if args[0].type == StringValue else Error("majus prend des chaines de caracteres seulement")))
 
     # effacer
     # not implimented yet

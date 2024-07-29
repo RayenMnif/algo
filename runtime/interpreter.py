@@ -143,7 +143,7 @@ def eval_call_expression(function: CallExpresstion, env: Environment) -> RunTime
     caller : NativeFnVal = evaluate(function.callee, env)
     if caller.type not in [NativeFnvalue, FunctionValue, ProcedureValue] : Error("You can only call functions")
     if caller.type == NativeFnvalue:
-        result = caller.call([evaluate(arg, env) for arg in function.args])
+        result = caller.call([evaluate(arg, env) for arg in function.args], env)
     elif caller.type in [FunctionValue, ProcedureValue]:
         func_env = Environment(env)
         # looking for matrice et tableau for predefining them
@@ -161,8 +161,8 @@ def eval_call_expression(function: CallExpresstion, env: Environment) -> RunTime
         for i in range(len(args)):
             func_env.assignVar(caller.param[i][0], args[i])
         check_parameters(caller.param, func_env)
+        func_return = evaluate(caller.body , func_env)
         if caller.type == FunctionValue:
-            func_return = evaluate(caller.body , func_env)
             if func_return.type != VarValues[caller.return_type]:
                 Error(f"la valeur de retour de la fonction '{caller.name}' ne correspond pas")
             return func_return
@@ -179,7 +179,11 @@ def check_parameters(parameters, env):
     """ checks the parameters types retunrs an error if parameter type not matching"""
     for param, paramType in parameters:
         if env.lookUpVar(param).type != VarValues[paramType]:
-            Error(f"la valeur de paramètere {param} ne correspond pas")
+            Error(f"la valeur de paramètere '{param}' ne correspond pas, le parametere '{param}' doit etre de type '{paramType}'")
+        if isinstance(env.lookUpVar(param).value, int) and paramType != "entier":
+            Error(f"la valeur de paramètere '{param}' ne correspond pas, le parametere '{param}' doit etre de type '{paramType}'")
+        if isinstance(env.lookUpVar(param).value, float) and paramType not in ["reel", "réel"]:
+            Error(f"la valeur de paramètere '{param}' ne correspond pas, le parametere '{param}' doit etre de type '{paramType}'")
 
 def eval_ds_call(call: DsCall, env: Environment):
     arguments = call.args
@@ -187,22 +191,25 @@ def eval_ds_call(call: DsCall, env: Environment):
     for arg in arguments:
         evaluated_agrument =  evaluate(arg ,env)
         if evaluated_agrument.type != NumberValue and not isinstance(evaluated_agrument.value, int):
-            Error(f"type d'argument est invalide {args[0].type} dans structure {DsCall.callee.name}, le argument doit etre un  entier")
+            Error(f"type d'argument est invalide '{args[0].type}' dans structure '{DsCall.callee.name}', le argument doit etre un  entier")
         args.append(evaluated_agrument)
+    # args 
+    i = args[0].value
+    j = args[1].value
     # matrice
     if len(args) == 2:
         matrice = env.lookUpVar(call.callee.name)
         if matrice.type == TableauValue:
             Error(f"'{matrice.name}' est un tableau, c'est pas une matrice")
-        if len(matrice.value) < args[0].value + 2:
-            for i in range((args[0].value - len(matrice.value) + 1)):
+        if len(matrice.value) < i + 1:
+            for a in range(((i + 1) - len(matrice.value))):
                 matrice.value.append([NullVal()])
         try:
-            if len(matrice.value[args[0].value]) < args[1].value:
-                for i in range((args[1].value - len(matrice.value[args[0].value]) + 1)):
-                    matrice.value[args[0].value].append(NullVal())
+            if len(matrice.value[i]) < j + 1:
+                for a in range(((j + 1) - len(matrice.value[i]))):
+                    matrice.value[i].append(NullVal())
         except TypeError: Error(f"you didn't specify the parameters in the matrice '{matrice.name}'")
-        matrice.pos = args[0].value, args[1].value
+        matrice.pos = i, j 
         env.assignVar(call.callee.name, matrice)
         return matrice
     # tableau

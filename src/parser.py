@@ -24,7 +24,7 @@ class Parser:
     def parse_block_statement(self, end_parsing_array: list[str]) -> BlockStatemnt:
         blockStatemnt = BlockStatemnt([])
         while self.tokens[0].type not in end_parsing_array:
-            if self.tokens[0].type == TT_EOF: Error("you forgot to close the statement")
+            if self.tokens[0].type == TT_EOF: Error("Tu as oublié de fermer la déclaration")
             blockStatemnt.body.append(self.parse_statement())
         return blockStatemnt
 
@@ -88,7 +88,7 @@ class Parser:
 
     def parse_data_structures_call_args(self, ds: Indentifier) -> list[Expression]:
         if self.tokens[0].type == TT_CloseBrace:
-            Error(f"No args were in Data Structure {ds.name}")
+            Error(f"aucun argument défini dans l'appel de structure de données {ds.name}")
         args = [self.parse_expression()]
         if self.tokens[0].type == TT_CloseBrace and self.advance(): 
             return args
@@ -111,14 +111,14 @@ class Parser:
         if self.tokens[0].type == TT_CloseParen:
             self.advance()
             return args
-        Error("missing closing parenthesis '('")
+        Error("parenthèse fermante ')' manquante")
 
     def parse_if_expression(self) -> Expression:
         cases = []
         else_case = None
         self.advance()
         condition = self.parse_boolean_expression()
-        if condition.type != NodeBooleanOperation: Error("Is that even a condition")
+        if condition.type != NodeBooleanOperation: Error("condition du si est unvalide")
         if self.tokens[0].type != TT_alors: Error("Excepted 'alors'")
         self.advance()
         statement = self.parse_block_statement([TT_elif, TT_else, TT_finsi])
@@ -126,7 +126,7 @@ class Parser:
         while self.tokens[0].type == TT_elif:
             self.advance()
             condition = self.parse_boolean_expression()
-            if condition.type != NodeBooleanOperation: Error("Is that even a condition")
+            if condition.type != NodeBooleanOperation: Error("condition du sinon est unvalide")
             if self.tokens[0].type != TT_alors: Error("Excepted 'alors'")
             self.advance()
             statement = self.parse_block_statement([TT_elif, TT_else, TT_finsi])
@@ -142,7 +142,7 @@ class Parser:
     def parse_tantque_loop(self):
         self.advance()
         condition = self.parse_boolean_expression()
-        if condition.type != NodeBooleanOperation: Error("Is that even a condition")
+        if condition.type != NodeBooleanOperation: Error("condition du boucle tant_que est unvalide")
         if self.tokens[0].type != TT_faire: Error("Excepted 'faire'")
         self.advance()
         statement = self.parse_block_statement([TT_fintanque])
@@ -158,21 +158,21 @@ class Parser:
         if self.tokens[0].type != TT_jusqua: Error("Excepted 'jusqu\'a'")
         self.advance()
         condition = self.parse_boolean_expression()
-        if condition.type != NodeBooleanOperation: Error("Is that even a condition")
+        if condition.type != NodeBooleanOperation: Error("condition du boucle repeter est unvalide")
         return loopTantqueRepeter(condition, statement, False)
 
     def parse_for_loop(self):
         self.advance()
         i = self.advance()
         if i.type != TT_Indentifier:
-            Error("ForLoopError: unvalid for loops structure\npour <var> de <number> a <number> (pas <number>)? faire\n\t<statement>\nfin_pour")
+            Error("structure unvalide\npour <var> de <number> a <number> (pas <number>)? faire\n\t<statement>\nfin_pour")
         de = self.advance()
         if de.type != TT_Indentifier and de.value != "de":
-            Error("ForLoopError: unvalid for loops structure\npour <var> de <number> a <number> (pas <number>)? faire\n\t<statement>\nfin_pour")
+            Error("structure unvalide\npour <var> de <number> a <number> (pas <number>)? faire\n\t<statement>\nfin_pour")
         num1 = self.parse_additive_expressions()
         a = self.advance()
         if a.type != TT_Indentifier and a.value != "a":
-            Error("ForLoopError: unvalid for loops structure\npour <var> de <number> a <number> (pas <number>)? faire\n\t<statement>\nfin_pour")
+            Error("structure unvalide\npour <var> de <number> a <number> (pas <number>)? faire\n\t<statement>\nfin_pour")
         num2 = self.parse_additive_expressions()
         if self.tokens[0].type != TT_pas:
             faire = self.advance()
@@ -194,7 +194,7 @@ class Parser:
     def parse_fonction(self) -> Expression:
         self.advance()
         callee = self.parse_primary_expressions()
-        if callee.type != NodeIndentifier: Error(f"Unvalid function name '{callee}'")
+        if callee.type != NodeIndentifier: Error(f"nom du fonction '{callee}' est unvalide")
         if self.advance().type != TT_OpenParen: Error("Expected open parenthesis '('")
         parameters = self.parse_parameters_list()
         if self.advance().type != TT_Colon: Error("Expected a Colon ':'")
@@ -226,13 +226,13 @@ class Parser:
         while self.tokens[0].type == TT_Comma and self.advance():
             parameters.append(self.parse_parameter())
             if len(parameters) > 100: Error("Function is taking more than 100 parameter")
-        if self.advance().type != TT_CloseParen: Error("Expected closing parenthesis '('")
+        if self.advance().type != TT_CloseParen: Error("Parenthèse fermante attendue '('")
         return parameters
 
     def parse_parameter(self) -> tuple[str, str]:
         param = self.parse_primary_expressions()
-        if param.type != NodeIndentifier: Error(f"Unvalid paramaeter '{param}'")
-        if self.advance().type != TT_Colon: Error("Expected a Colon ':'")
+        if param.type != NodeIndentifier: Error(f"paramaetere unvalide '{param}'")
+        if self.advance().type != TT_Colon: Error("On s'attend à un deux points ':'")
         argType = self.parse_primary_expressions()
 
         return (param.name, argType.name)
@@ -240,8 +240,8 @@ class Parser:
     def check_argType(self, argType: Expression) -> None:
         if argType.type != NodeIndentifier:
             if argType.name not in VarValues.keys() :
-                Error(f"Unvalid argument type '{argType.name}'")
-            Error(f"Unvalid argument type '{argType}'")
+                Error(f"type d'argument '{argType}' est unvalide")
+            Error(f"type d'argument '{argType}' est unvalide")
 
     def parse_return_statement(self):
         self.advance()
@@ -258,7 +258,7 @@ class Parser:
             self.advance()
             value = self.parse_expression()
             tt = self.advance()
-            if tt.type != TT_CloseParen: Error("missing closing parenthesis ')'")
+            if tt.type != TT_CloseParen: Error("parenthèse fermante manquante ')'")
             return value
         elif token_type == TT_if:
             return self.parse_if_expression()
@@ -271,5 +271,5 @@ class Parser:
         elif token_type == TT_Procedure: return self.parse_procedure()
         elif token_type == TT_Retourner: return self.parse_return_statement()
         else:
-            Error(f"Parser Error: Unvalid Statement {self.advance()}")
+            Error(f"Erreur d'analyse : déclaration non valide {self.advance()}")
             return Expression("")

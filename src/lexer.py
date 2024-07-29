@@ -101,7 +101,7 @@ class Lexer:
                 string += src[i]
                 i += 1
         except:
-            Error("quotes were not close", self.PosLine)
+            Error("les citations n'étaient pas fermées", self.PosLine)
         return string
 
     def tokinze(self) -> list[Token]:
@@ -174,7 +174,7 @@ class Lexer:
                 while len(src) and (src[0].isdigit() or src[0] == "."):
                     if src[0] == ".":
                         if is_float:
-                            Error("unvalid number", self.PosLine)
+                            Error("nombre unvalide", self.PosLine)
                         else:
                             is_float = True
                     number += src[0]
@@ -204,7 +204,7 @@ class Lexer:
                 tokens.append(Token(keyword, TT_Indentifier) if keyword not in KEYWORDS.keys() else Token(keyword, KEYWORDS[keyword]))
 
             else:
-                Error(f"Syntax Error: unkown symbol {src[0]}", self.PosLine)
+                Error(f"symbol inconnue {src[0]}", self.PosLine)
 
         tokens.append(Token("EOF", TT_EOF))
         return tokens
