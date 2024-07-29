@@ -85,10 +85,10 @@ def setup_global_env():
         if len(args) != 1:
             Error("long prend un seul argument")
         else:
-            if args[0].type in [StringValue, TableauVal, MatriceVal]:
+            if args[0].type == StringValue:
                 NumberVal(len(args[0].value))
             else:
-                Error("argument long est unvalid")
+                Error("long prend un seul argument une chaine")
     env.assignVar("long", NativeFnVal(long))
 
     # lire
