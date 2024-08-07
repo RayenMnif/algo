@@ -53,7 +53,7 @@ def main():
                 program = Parser(prompt).produce_ast()
                 print(program)
                 print("------------------------------------")
-                evaluate(program, env)
+                print(evaluate(program, env))
             except KeyboardInterrupt:
                 exit()
             except EOFError:

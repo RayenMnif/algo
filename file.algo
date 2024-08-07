@@ -1,1 +1,8 @@
+procedure liretab(tab : tableau, n : entier)
+debut 
+    n <- valeur(lire())
+    ecrire(n)
+fin 
 
+n <- 0
+liretab(T, n)

@@ -115,6 +115,8 @@ def setup_global_env():
                     else:
                         Error(f"Il est impossible de lire la tableau '{tableau.name}' il faux specifier les argument\nExemple: lire({tableau.name}[0])")
                 else: Error("Unvalid argument type\nlire should take une chaine as argument or no argument")
+            else:
+                return StringVal(input("> "))
 
     env.assignVar("lire", NativeFnVal(lire))
     
@@ -136,7 +138,7 @@ def setup_global_env():
 
     # valeur 
     def valeur(args, env):
-        if len(args) != 1:
+        if len(args) != 1 or args[0].type != StringValue:
             Error("valeur(x) prend un seul argument (une chaine)")
         if args[0].value.isdigit():
             return NumberVal(float(args[0].value))
