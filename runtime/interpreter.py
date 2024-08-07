@@ -195,7 +195,7 @@ def eval_ds_call(call: DsCall, env: Environment):
         args.append(evaluated_agrument)
     # args 
     i = args[0].value
-    if len(args) > 1:
+    if len(args) == 2:
         j = args[1].value
     # matrice
     if len(args) == 2:
@@ -218,7 +218,7 @@ def eval_ds_call(call: DsCall, env: Environment):
         tableau = env.lookUpVar(call.callee.name)
         if tableau.type == MatriceValue:
             Error(f"'{tableau.name}' est une matrice, c'est pas un tableau")
-        if len(tableau.value) < ( i + 1 ) :
+        while len(tableau.value) < ( i + 1 ) :
             tableau.value.append([NullVal()]*(i - len(tableau.value) ))
         tableau.pos = args[0].value
         env.assignVar(call.callee.name, tableau)
