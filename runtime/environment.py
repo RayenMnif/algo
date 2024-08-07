@@ -109,7 +109,7 @@ def setup_global_env():
                         Error(f"Il est impossible de lire la matrice '{matrice.name}' il faux specifier les argument\nExemple: lire({matrice.name}[0,0])")
                 elif args[0].type == TableauValue:
                     tableau : TableauVal = args[0]
-                    if tableau.pos:
+                    if tableau.pos != None:
                         args[0].value[args[0].pos] = StringVal(input("> "))
                         env.assignVar(tableau.name, TableauVal(tableau.name, tableau.value))
                     else:

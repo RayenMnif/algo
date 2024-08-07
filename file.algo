@@ -1,7 +1,19 @@
 procedure liretab(tab : tableau, n : entier)
 debut 
-    n <- valeur(lire())
-    ecrire(n)
+   
+   # lire n
+   
+   repeter
+        n <- lire()
+        n <- valeur(n)
+    jusqu'a n >= 10
+
+   # lire tab 
+   
+   pour i de 0 a n - 1 faire
+    lire(tab[i])
+   fin_pour 
+
 fin 
 
 n <- 0
