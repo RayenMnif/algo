@@ -1,4 +1,4 @@
-procedure liretab(tab : tableau, n : entier)
+procedure liretab(tab : matrice, n : entier)
 debut 
    
    # lire n
@@ -11,7 +11,7 @@ debut
    # lire tab 
    
    pour i de 0 a n - 1 faire
-    lire(tab[i])
+    lire(tab[i,i])
    fin_pour 
 
 fin 

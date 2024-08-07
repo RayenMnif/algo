@@ -202,11 +202,11 @@ def eval_ds_call(call: DsCall, env: Environment):
         matrice = env.lookUpVar(call.callee.name)
         if matrice.type == TableauValue:
             Error(f"'{matrice.name}' est un tableau, c'est pas une matrice")
-        if len(matrice.value) < i + 1:
-            for a in range((i - len(matrice.value))):
+        if len(matrice.value) < (i + 1):
+            for a in range(((i + 1) - len(matrice.value))):
                 matrice.value.append([NullVal()])
         try:
-            if len(matrice.value[i]) < j + 1:
+            if len(matrice.value[i]) < (j + 1):
                 for a in range(((j + 1) - len(matrice.value[i]))):
                     matrice.value[i].append(NullVal())
         except TypeError: Error(f"you didn't specify the parameters in the matrice '{matrice.name}'")
