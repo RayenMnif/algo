@@ -21,10 +21,16 @@ class Environment:
             self.variables[var_name] = value
         return value
 
-    def resolve (self, var_name: str):
+    def resolve(self, var_name: str):
         if var_name in self.variables.keys(): return self
         if self.parent == None: Error(f"impossible de résoudre la variable '{var_name}' car elle n'exite pas")
         return self.parent.resolve(var_name)
+
+    def available(self, var_name: str):
+        if var_name in self.variables.keys(): return True
+        if self.parent == None: return False
+        return self.parent.resolve(var_name)
+
 
     def get_scope(self, var_name: str):
         if var_name in self.variables.keys(): return self
@@ -99,18 +105,18 @@ def setup_global_env():
             if len(args) == 1:
                 if args[0].type == StringValue:
                     print(args[0].value, end="")
-                    return StringVal(input("> "))
+                    return StringVal(input(""))
                 elif args[0].type == MatriceValue:
                     matrice : MatriceVal = args[0]
                     if matrice.pos:
-                        args[0].value[args[0].pos[0]][args[0].pos[1]] = StringVal(input("> "))
+                        matrice.value[args[0].pos[0]][args[0].pos[1]] = StringVal(input("> "))
                         env.assignVar(matrice.name, MatriceVal(matrice.name, matrice.value))
                     else: 
                         Error(f"Il est impossible de lire la matrice '{matrice.name}' il faux specifier les argument\nExemple: lire({matrice.name}[0,0])")
                 elif args[0].type == TableauValue:
                     tableau : TableauVal = args[0]
                     if tableau.pos != None:
-                        args[0].value[args[0].pos] = StringVal(input("> "))
+                        tableau.value[args[0].pos] = StringVal(input("> "))
                         env.assignVar(tableau.name, TableauVal(tableau.name, tableau.value))
                     else:
                         Error(f"Il est impossible de lire la tableau '{tableau.name}' il faux specifier les argument\nExemple: lire({tableau.name}[0])")

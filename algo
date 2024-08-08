@@ -10,6 +10,8 @@ from runtime.interpreter import *
 
 def main():
 
+    dev = False
+
     env = setup_global_env()
 
     if len(argv) not in [2, 1]:
@@ -21,8 +23,9 @@ def main():
             with open(argv[1], "r") as script:
                 src = script.read()
                 program = Parser(src).produce_ast()
-                print(program)
-                print("-----------------------------")
+                if dev:
+                    print(program)
+                    print("-----------------------------")
                 evaluate(program, env)
         except FileNotFoundError: Error("FileNotFoundError: Canno't find the file you're looking for")
     else:
@@ -51,8 +54,9 @@ def main():
                 if prompt.upper() == "CREDITS": print("project by Rayen Mnif")
                 if prompt.upper() == "HELP": print("the docs are not available at the moment")
                 program = Parser(prompt).produce_ast()
-                print(program)
-                print("------------------------------------")
+                if dev:
+                    print(program)
+                    print("------------------------------------")
                 print(evaluate(program, env))
             except KeyboardInterrupt:
                 exit()

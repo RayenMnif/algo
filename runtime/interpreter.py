@@ -149,12 +149,32 @@ def eval_call_expression(function: CallExpresstion, env: Environment) -> RunTime
         # looking for matrice et tableau for predefining them
         if len(caller.param) != len(function.args):
             Error(f"FunctionError: number of args not matching in function '{caller.name}' ")
+
         for i in range(len(caller.param)):
+
             if function.args[i].type == NodeIndentifier:
+
                 if caller.param[i][1] in ["Mat", "matrice"]:
-                    env.assignVar(function.args[i].name, MatriceVal(function.args[i].name, [[NullVal()]]))
+                    if not env.available(function.args[i].name):
+                        env.assignVar(function.args[i].name, MatriceVal(function.args[i].name, [[NullVal()]]))
+
                 if caller.param[i][1] in ["Tab", "tableau"]:
-                    env.assignVar(function.args[i].name, TableauVal(function.args[i].name, [NullVal()]))
+                    if not env.available(function.args[i].name):
+                        env.assignVar(function.args[i].name, TableauVal(function.args[i].name, [NullVal()]))
+
+                if caller.param[i][1] == "entier":
+                    if not env.available(function.args[i].name):
+                        env.assignVar(function.args[i].name, NumberVal(0))
+
+                if caller.param[i][1] in ["reel", "réel"]:
+                    if not env.available(function.args[i].name):
+                        env.assignVar(function.args[i].name, NumberVal(0.0))
+
+                if caller.param[i][1] in ["chaine", "chaine_de_caractere", "chaine_de_caractère"]:
+                    if not env.available(function.args[i].name):
+                        env.assignVar(function.args[i].name, StringVal(""))
+
+
         # evaluating call args 
         args = [evaluate(arg, env) for arg in function.args]
         # assigning variables in the function scope (environment)
