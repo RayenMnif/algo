@@ -45,7 +45,7 @@ def setup_global_env():
     # --- helpers functions ---
     def get_data(ds: MatriceVal | TableauVal):
         if ds.pos != None:
-            return ds.value[ds.pos[0]][ds.pos[1]].value if ds.type == MatriceValue else ds.value[ds.pos].value
+            return ds.value[ds.pos[0]][ds.pos[1]] if ds.type == MatriceValue else ds.value[ds.pos]
         else:
             Error(f"If faut specifier les paramametre pour {"la matrice" if ds.type == MatriceValue else "le tableau"} '{ds.name}'")
 
@@ -85,22 +85,115 @@ def setup_global_env():
     env.assignVar("ecrire", NativeFnVal(ecrire))
     env.assignVar("écrire", NativeFnVal(ecrire))
     # arrondi
-    env.assignVar("arrondi", NativeFnVal(lambda args, env: Error("arrondi prend un seul argument") if len(args) != 1 else NumberVal(round(args[0].value)) if args[0].type == NumberValue else Error("arrondi prend un nombre comme argument") ))
+    def arroundi(args, env):
+        if len(args) != 1:
+            Error("arrondi(x) prend un seul argument")
+        else:
+            if args[0].type == NumberValue:
+                return NumberVal(round(args[0].value))
+            elif args[0].type in [TableauValue, MatriceValue]:
+                result = get_data(args[0])
+                return arroundi([result], env)
+            else:
+                Error("arrondi(x) prend un nombre comme argument")
+    env.assignVar("arrondi", NativeFnVal(arroundi))
+
     # racine_carré
-    env.assignVar("racine_carre", NativeFnVal(lambda args, env: Error("racine_carre prend un seul argument") if len(args) != 1 else NumberVal(sqrt(args[0].value)) if args[0].type == NumberValue else Error("racine_carre prend un nombre comme argument") ))
-    env.assignVar("racine_carré", NativeFnVal(lambda args, env: Error("racine_carré prend un seul argument") if len(args) != 1 else NumberVal(sqrt(args[0].value)) if args[0].type == NumberValue else Error("racine_carre prend un nombre comme argument") ))
+    def racine_carre(args, env):
+        if len(args) != 1:
+            Error("racine_carre(x) prend un seul argument (un nombre)")
+        else:
+            if args[0].type == NumberValue:
+                return NumberVal(sqrt(args[0].value))
+            elif args[0].type in [TableauValue, MatriceValue]:
+                result = get_data(args[0])
+                return racine_carre([result], env)
+            else:
+                Error("racine_carre(x) prend un nombre comme argument")
+
+    env.assignVar("racine_carre", NativeFnVal(racine_carre))
+    env.assignVar("racine_carré", NativeFnVal(racine_carre))
+
     # ent
-    env.assignVar("ent", NativeFnVal(lambda args, env: Error("ent prend un seul argument") if len(args) != 1 else NumberVal(int(args[0].value)) if args[0].type == NumberValue else Error("ent prend un nombre comme argument") ))
+    def ent(args, env):
+        if len(args) != 1:
+            Error("ent(x) prend un seul argument (un nombre)")
+        else:
+            if args[0].type == NumberValue:
+                return NumberVal(int(args[0].value))
+            elif args[0].type in [TableauValue, MatriceValue]:
+                result = get_data(args[0])
+                return ent([result], env)
+            else:
+                Error("ent(x) prend un nombre comme argument")
+
+    env.assignVar("ent", NativeFnVal(ent))
+
     # abs
-    env.assignVar("abs", NativeFnVal(lambda args, env: Error("abs prend un seul argument") if len(args) != 1 else NumberVal(abs(args[0].value)) if args[0].type == NumberValue else Error("abs prend un nombre comme argument") ))
+    def to_abs(args, env):
+        if len(args) != 1:
+            Error("abs(x) prend un seul argument (un nombre)")
+        else:
+            if args[0].type == NumberValue:
+                return NumberVal(abs(args[0].value))
+            elif args[0].type in [TableauValue, MatriceValue]:
+                result = get_data(args[0])
+                return abs([result], env)
+            else:
+                Error("abs(x) prend un nombre comme argument")
+
+
+    env.assignVar("abs", NativeFnVal(to_abs))
+
     # alea
-    env.assignVar("alea", NativeFnVal(lambda args, env: Error("alea takes two numbers") if len(args) != 2 else NumberVal(float(randint(int(args[0].value), int(args[1].value))) if args[0].type == NumberValue and args[0].type == NumberValue and args[0].value < args[1].value else Error("alea takes two number as argument") )))
+    def alea(args, env):
+        if len(args) != 2:
+            Error("alea(a, b) prend deux arguments (deux entiers)")
+        else:
+            if args[0].type in [TableauValue, MatriceValue]: args[0] = get_data(args[0])
+            if args[1].type in [TableauValue, MatriceValue]: args[1] = get_data(args[1])
+
+            if args[0].type == NumberValue and args[1].type == NumberValue:
+                if args[1].value < args[0].value:
+                    Error("alea(a, b) error l'argument a > b")
+                return NumberVal(randint(int(args[0].value), int(args[1].value)))
+            else:
+                Error("alea(a, b) prend deux nombres comme argument")
+
+
+    env.assignVar("alea", NativeFnVal(alea))
 
     # estnum
-    env.assignVar("estnum", NativeFnVal(lambda args, env: Error("estnum prend un seul argument (une chaine)") if len(args) != 1 else BooleanVal(args[0].value.isdigit()) if args[0].type == StringValue else Error("estnum prend des chaines de caracteres seulement")))
+    def estnum(args, env):
+        if len(args) != 1:
+            Error("estnum(x) prend un seul argument (une chaine)")
+        else:
+            if args[0].type == StringValue:
+                return BooleanVal(args[0].value.isdigit())
+            elif args[0].type in [TableauValue, MatriceValue]:
+                result = get_data(args[0])
+                return estnum([result], env)
+            else:
+                Error("estnum(x) prend une chaine comme argument")
+
+
+    env.assignVar("estnum", NativeFnVal(estnum))
 
     #convch
-    env.assignVar("convch", NativeFnVal(lambda args, env: Error("convch prend un seul argument (une valeur numerique)") if len(args) != 1 else StringVal(str(args[0].value)) if args[0].type == NumberValue else Error("convch prend seulement des valueur numerique")))
+    def convch(args, env):
+        if len(args) != 1:
+            Error("convch(x) prend un seul argument (une valeur numerique)")
+        else:
+            if args[0].type == NumberValue:
+                return StringVal(str(args[0].value))
+            elif args[0].type in [TableauValue, MatriceValue]:
+                result = get_data(args[0])
+                return convch([result], env)
+            else:
+                Error("convch(x) prend une valeur numerique comme argument")
+
+
+    env.assignVar("convch", NativeFnVal(convch))
 
     # long
     def long(agrs):
@@ -147,8 +240,12 @@ def setup_global_env():
     def sous_chaine(args, env):
         if len(args) != 3:
             Error("sous_chaine prend trois arguments\nsous_chaine(ch, d, f) d'ou ch est la chaine, d est le debut et f est la fin")
-        if args[0].type != StringValue or args[1].type != NumberValue or args[2].type != NumberValue:
+        if args[0].type not in [StringValue, TableauValue, MatriceValue] or args[1].type != NumberValue or args[2].type != NumberValue:
             Error("sous_chaine prend trois arguments\nsous_chaine(ch, d, f) d'ou ch est la chaine, d (entier) est le debut et f (entier) est la fin")
+        if args[0].type in [MatriceValue, TableauValue]:
+            ch = get_data(args[0])
+            if ch.type != StringValue:
+                Error("sous_chaine prend trois arguments\nsous_chaine(ch, d, f) d'ou ch est la chaine, d (entier) est le debut et f (entier) est la fin")
         ch : StringVal = args[0].value
         d : NumberVal = args[1].value
         f : NullVal = args[2].value
@@ -174,6 +271,8 @@ def setup_global_env():
     def pos(args, env):
         if len(args) != 2:
             Error("pos(ch1, ch2) prend deux arguments (de type chaine)")
+        if args[0].type in [TableauValue, MatriceValue]: args[0] = get_data(args[0])
+        if args[1].type in [TableauValue, MatriceValue]: args[1] = get_data(args[1])
         if args[0].type != args[1].type != StringValue:
             Error("pos(ch1, ch2) prend deux arguments (de type chaine)")
         ch1 : str = args[0].value
@@ -184,14 +283,31 @@ def setup_global_env():
 
 
     # majus
-    env.assignVar("majus", NativeFnVal(lambda args, env: Error("majus prend un seul argument (une chaine)") if len(args) != 1 else StringVal(args[0].value.upper()) if args[0].type == StringValue else Error("majus prend des chaines de caracteres seulement")))
+    def majus(args, env):
+        if len(args) != 1:
+            Error("majus(x) prend un seul argument (une chaine)")
+        else:
+            if args[0].type == StringValue:
+                return StringVal(args[0].value.upper())
+            elif args[0].type in [TableauValue, MatriceValue]:
+                result = get_data(args[0])
+                return majus([result], env)
+            else:
+                Error("majus(x) prend une chaine comme argument")
+
+
+    env.assignVar("majus", NativeFnVal(majus))
 
     # effacer(ch, d, f)
     def effacer(args, env):
         if len(args) != 3:
             Error("effacer prend trois arguments\neffacer(ch, d, f) d'ou ch est la chaine, d est le debut et f est la fin")
-        if args[0].type != StringValue or args[1].type != NumberValue or args[2].type != NumberValue:
+        if args[0].type not in [StringValue, TableauValue, MatriceValue] or args[1].type != NumberValue or args[2].type != NumberValue:
             Error("effacer prend trois arguments\neffacer(ch, d, f) d'ou ch est la chaine, d (entier) est le debut et f (entier) est la fin")
+        if args[0].type in [MatriceValue, TableauValue]:
+            ch = get_data(args[0])
+            if ch.type != StringValue:
+                Error("effacer prend trois arguments\neffacer(ch, d, f) d'ou ch est la chaine, d est le debut et f est la fin")
         ch : str = args[0].value
         d : int = args[1].value
         f : int = args[2].value

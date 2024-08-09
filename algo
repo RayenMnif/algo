@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 
-from rich import print
 from runtime.environment import setup_global_env
 from src.parser import *
 from src.lexer import * 
@@ -14,7 +13,7 @@ from runtime.interpreter import *
 
 def main():
 
-    dev = True
+    dev = False
 
     env = setup_global_env()
 
@@ -58,8 +57,12 @@ def main():
             try:
                 prompt = input(">> ")
                 if prompt.upper() in ["EXIT", "QUIT"]: exit()
-                if prompt.upper() == "CREDITS": print("project by Rayen Mnif")
-                if prompt.upper() == "HELP": print("the docs are not available at the moment")
+                if prompt.upper() == "CREDITS":
+                    print("project by Rayen Mnif")
+                    exit()
+                if prompt.upper() == "HELP":
+                    print("the docs are not available at the moment")
+                    exit()
                 program = Parser(prompt).produce_ast()
                 if dev:
                     print(program)

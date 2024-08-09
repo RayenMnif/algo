@@ -1,5 +1,4 @@
 from runtime.environment import Environment
-from collections import defaultdict
 from src.utils import *
 from runtime.value import *
 from src.ast import *

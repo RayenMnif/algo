@@ -1,31 +1,30 @@
-procedure remplir(mat : matrice, n : entier)
-debut 
-   
+ procedure remplir(tab : tableau, n : entier)
+debut
+
+   # lire n (n is being auto allocataed in memory)
+
    repeter
        n <- lire("lire n: ")
        n <- valeur(n) # returns a float
        n <- ent(n)
-   jusqu'a n >= 3
+    jusqu'a n >= 3
+
+   # lire tab
 
    pour i de 0 a n - 1 faire
-       pour j de 0 a n - 1 faire
-           ecrire("mat[",i,',',j,']: ')
-           lire(mat[i, j])
-           mat[i, j] <- valeur(mat[i, j])
-        fin_pour
-   fin_pour 
-   
+       lire(tab[i])
+   fin_pour
+
 fin
 
-procedure afficher(mat: matrice, n: entier)
+procedure afficher(tab: tableau, n: entier)
 debut
-    pour i de 0 a n - 1 faire
-        pour j de 0 a n - 1 faire
-           ecrire(mat[i, j])
-        fin_pour
-    fin_pour
-fin 
+    i <- 0
+    tant_que i < n faire
+       ecrire("tab[",i,"]: ",tab[i])
+       i <- i + 1
+    fin_tant_que
+fin
 
 remplir(T, n)
 afficher(T, n)
-
