@@ -10,6 +10,9 @@
                                           
      Tunisian shitty pseudo/programming language
 
+> [!NOTE] This is a beta version of the project. It may be buggy and unstable, as it was developed by a single developer with no prior experience. Your contributions are welcome, especially if you encounter any issues.
+
+
 # Table of Contents
 
 - [Language Introduction and Setup](#language-introduction-and-setup)
@@ -166,6 +169,67 @@ Boolean values, named after the mathematician George Boole, represent one of two
     here in those [function](#functions) you declared a matrice stored 25 (5 * 5) values to it, algo like the real algo auto malloc values in matrice and empty values are  assigned to nulle 
 
      >[!NOTE] you can only assign tableau in [functions](#functions) since the [functions](#functions) auto assigns them
+
+## loops
+
+### boucle pour
+#### main syntax
+```
+pour <var> de <entier> a <entier> faire 
+  <statement>
+fin_pour
+```
+
+```
+pour <var> de <entier> a <entier> pas <entier> faire 
+  <statement>
+fin_pour
+```
+#### example
+
+```
+pour i de 0 a 5 faire 
+  ecrire(i)
+fin_pour
+```
+```
+pour i de 0 a 5 pas 2 faire 
+  ecrire(i)
+fin_pour
+```
+
+### boucle tant_que
+#### main syntax
+```
+tant_que <boolean expression> faire 
+  <statement>
+fin_tant_que
+```
+
+#### example
+```
+i <- 0
+tant_que i < 5 faire 
+  i <- i + 1
+  ecrire(i)
+fin_tant_que
+```
+### boucle repeter
+#### main syntax
+```
+repeter 
+  <statement>
+jusqu'a <boolean expression>
+```
+
+#### example
+```
+i <- 0
+repeter 
+  i <- 1 + i
+  ecrire(i) 
+jusqu'a i > 5
+```
 
 ## functions
 
@@ -367,3 +431,128 @@ procedure hello(name : chaine)
   3 >= 5                    # returns faux
   ```
 ## code simples
+<details>
+
+  <summary>reading and writing from a `tableau`</summary>
+
+  ### code
+
+  ```
+  procedure remplir(tab : tableau, n : entier)
+debut
+
+   # lire n (n is being auto allocataed in memory)
+
+   repeter
+       n <- lire("lire n: ")
+       n <- valeur(n) # returns a float
+       n <- ent(n)
+    jusqu'a n >= 3
+
+   # lire tab
+
+   pour i de 0 a n - 1 faire
+       lire(tab[i])
+   fin_pour
+
+fin
+
+procedure afficher(tab: tableau, n: entier)
+debut
+    i <- 0
+    tant_que i < n faire
+       ecrire(tab[i])
+       i <- i + 1
+    fin_tant_que
+fin
+
+remplir(T, n)
+afficher(T, n)
+```
+
+### output
+
+```
+lire n: 3
+> 165
+> 48769
+> 645
+165
+48769
+645
+```
+
+</details>
+<details>
+
+  <summary>reading and writing from a `matrice`</summary>
+
+  ### code
+
+  ```
+procedure remplir(mat : matrice, n : entier)
+debut 
+   
+   repeter
+       n <- lire("lire n: ")
+       n <- valeur(n) # returns a float
+       n <- ent(n)
+   jusqu'a n >= 3
+
+   pour i de 0 a n - 1 faire
+       pour j de 0 a n - 1 faire
+           ecrire("mat[",i,',',j,']: ')
+           lire(mat[i, j])
+           mat[i, j] <- valeur(mat[i, j])
+        fin_pour
+   fin_pour 
+   
+fin
+
+procedure afficher(mat: matrice, n: entier)
+debut
+    pour i de 0 a n - 1 faire
+        pour j de 0 a n - 1 faire
+           ecrire(mat[i, j])
+        fin_pour
+    fin_pour
+fin 
+
+remplir(T, n)
+afficher(T, n)
+```
+
+### output
+
+```
+lire n: 3
+mat[0,0]:
+> 654
+mat[0,1]:
+> 978
+mat[0,2]:
+> 798
+mat[1,0]:
+> 645
+mat[1,1]:
+> 798
+mat[1,2]:
+> 798
+mat[2,0]:
+> 789
+mat[2,1]:
+> 798
+mat[2,2]:
+> 978
+654.0
+978.0
+798.0
+645.0
+798.0
+798.0
+789.0
+798.0
+978.0
+```
+
+</details>

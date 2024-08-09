@@ -154,7 +154,6 @@ class Parser:
     def parse_repeter_loop(self):
         self.advance()
         statement = self.parse_block_statement([TT_jusqua])
-        print(f"statement : {statement}")
         if self.tokens[0].type != TT_jusqua: Error("Excepted 'jusqu\'a'")
         self.advance()
         condition = self.parse_boolean_expression()

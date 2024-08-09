@@ -7,10 +7,14 @@ from src.lexer import *
 from sys import argv, exit
 from runtime.interpreter import *
 
+"""
+    sorry for the bad code that i wrote :')
+                                 - Rayen Mnif 
+"""
 
 def main():
 
-    dev = False
+    dev = True
 
     env = setup_global_env()
 
@@ -27,7 +31,10 @@ def main():
                     print(program)
                     print("-----------------------------")
                 evaluate(program, env)
-        except FileNotFoundError: Error("FileNotFoundError: Canno't find the file you're looking for")
+        except FileNotFoundError: Error(f"fichier non valide: on ne peut pas trouver le fichier '{argv[1]}'")
+        except KeyboardInterrupt: exit(0)
+        except EOFError: exit(0)
+
     else:
         print(""" 
          ▄▄▄       ██▓      ▄████  ▒█████  

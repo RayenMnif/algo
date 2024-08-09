@@ -18,9 +18,15 @@ def eval_if_statement(ifStmnt: ifStatement, env: Environment) -> RunTime:
 
 
 def eval_boolean_operation(bo: BooleanOperation, env: Environment) -> RunTime:
+
     left = evaluate(bo.LeftOp, env)
     right = evaluate(bo.RightOp, env)
+    if left.type in [MatriceValue, TableauValue]:
+        left = get_data_structure_value(left)
+    if right.type in [MatriceValue, TableauValue]:
+        right = get_data_structure_value(right)
     op = bo.op
+
     if right.type == NumberValue and left.type == NumberValue:
         left = left.value
         right = right.value
@@ -30,7 +36,7 @@ def eval_boolean_operation(bo: BooleanOperation, env: Environment) -> RunTime:
         elif op == "<=": result = left <= right
         elif op == "=": result = left == right
         elif op == "!=": result = left != right
-        else: Error("or, et works only with bools")
+        else: Error("les op 'ou' et 'et' sont seulement pour les bouleean (vrai/faux)")
     else:
         left = left.value
         right = right.value
@@ -92,12 +98,32 @@ def eval_program(program : Program, env: Environment) -> RunTime:
         last_evaluated =  evaluate(statement, env)
     return last_evaluated
 
+def get_data_structure_value(ds: MatriceVal | TableauVal):
+    if ds.pos != None:
+        return ds.value[ds.pos[0]][ds.pos[1]] if ds.type == MatriceValue else ds.value[ds.pos]
+    else:
+        Error(f"If faut specifier les paramametre pour {"la matrice" if ds.type == MatriceValue else "le tableau"} '{ds.name}'")
+
 
 def eval_Var(var: Indentifier, env: Environment) -> RunTime:
     return env.lookUpVar(var.name)
 
 def eval_assignment(assig: Assignment, env: Environment):
-    if assig.var.type != NodeIndentifier: Error(f"Looks like you're wrongly assigning the variable")
+    if assig.var.type != NodeIndentifier: 
+        # assigning data structures (matrice/tableau)
+        evaluated_assignee = evaluate(assig.var, env)
+        if evaluated_assignee.type in [MatriceValue, TableauValue]:
+            if evaluated_assignee.pos != None:
+                evaluated_value = evaluate(assig.value, env)
+                if evaluated_assignee.type == MatriceValue:
+                    evaluated_assignee.value[evaluated_assignee.pos[0]][evaluated_assignee.pos[1]] = get_data_structure_value(evaluated_value) if evaluated_value.type in [MatriceValue, TableauValue] else evaluated_value
+                else:
+                    evaluated_assignee.value[evaluated_assignee.pos] = get_data_structure_value(evaluated_value) if evaluated_value.type in [MatriceValue, TableauValue] else evaluated_value
+                return env.assignVar(evaluated_assignee.name, MatriceVal(evaluated_assignee.name, evaluated_assignee.value) if evaluated_assignee.type == MatriceValue else TableauVal(evaluated_assignee.name, evaluated_assignee.value))
+            else:
+                Error(f"on dirait que vous attribuez la {"matrice" if evaluated_assignee.type == MatriceValue else "tableau"} '{assig.var}' de manière incorrecte")
+        else:
+            Error(f"on dirait que vous attribuez la variable '{assig.var}' de manière incorrecte")
     return env.assignVar(assig.var.name, evaluate(assig.value, env))
 
 def eval_block_statement(block: BlockStatemnt, env: Environment) -> RunTime:

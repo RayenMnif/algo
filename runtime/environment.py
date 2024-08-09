@@ -41,6 +41,18 @@ class Environment:
 
 def setup_global_env():
     env = Environment()
+    
+    # --- helpers functions ---
+    def get_data(ds: MatriceVal | TableauVal):
+        if ds.pos != None:
+            return ds.value[ds.pos[0]][ds.pos[1]].value if ds.type == MatriceValue else ds.value[ds.pos].value
+        else:
+            Error(f"If faut specifier les paramametre pour {"la matrice" if ds.type == MatriceValue else "le tableau"} '{ds.name}'")
+
+    def est_digit(valeur):
+        if valeur.isdigit():
+            return NumberVal(float(valeur))
+        Error(f"valeur('{valeur}') : la chaine '{valeur}' n'est pas une chaine numerique")
 
     # --- global values ---
     # Boolean values
@@ -64,7 +76,11 @@ def setup_global_env():
                 print(args[0].value[args[0].pos])
             except TypeError:
                 print(args[0].value)
-        else: [ print(arg, end="") if (i != len(args) - 1) else print(arg) for i, arg in enumerate(args) ]
+        else:
+            for i, arg in enumerate(args):
+                if i != len(args) - 1:
+                    print(arg if arg.type not in [MatriceValue, TableauValue] else get_data(arg), end="")
+                else: print(arg if arg.type not in [MatriceValue, TableauValue] else get_data(arg)) 
 
     env.assignVar("ecrire", NativeFnVal(ecrire))
     env.assignVar("écrire", NativeFnVal(ecrire))
@@ -144,11 +160,14 @@ def setup_global_env():
 
     # valeur 
     def valeur(args, env):
-        if len(args) != 1 or args[0].type != StringValue:
+        if len(args) != 1 or args[0].type not in [StringValue, MatriceValue, TableauValue]:
             Error("valeur(x) prend un seul argument (une chaine)")
-        if args[0].value.isdigit():
-            return NumberVal(float(args[0].value))
-        Error(f"valeur('{args[0].value}') : la chaine '{args[0].value}' n'est pas une chaine numerique")
+        if args[0].type == StringValue:
+            return est_digit(args[0].value)
+        else:
+            if args[0].pos != None:
+                return est_digit(args[0].value[args[0].pos[0]][args[0].pos[1]].value if args[0].type == MatriceValue else args[0].value[args[0].pos].value )
+            else: Error(f"aucun argument est specifee dans {"la matrice" if args[0].type == MatriceValue else "le tableau"} '{args[0].name}'")
     env.assignVar("valeur", NativeFnVal(valeur))
 
     # pos(ch1, ch2) 
